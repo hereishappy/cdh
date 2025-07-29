@@ -277,6 +277,163 @@
             height: 20px;
             transition: opacity 0.3s ease;
         }
+        
+        /* Resource Cards Styles */
+        .resource-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            transition: all 0.5s ease;
+            overflow: hidden;
+        }
+        
+        .resource-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+        
+        .resource-card.materials {
+            background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+        }
+        
+        .resource-card.manpower {
+            background: linear-gradient(135deg, #10b981 0%, #065f46 100%);
+        }
+        
+        .resource-card.equipment {
+            background: linear-gradient(135deg, #f59e0b 0%, #b45309 100%);
+        }
+        
+        .resource-icon {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            margin-bottom: 1rem;
+        }
+        
+        .resource-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            margin-bottom: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .resource-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(5px);
+        }
+        
+        .resource-item-icon {
+            width: 30px;
+            height: 30px;
+            margin-right: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+        }
+        
+        .resource-carousel {
+            display: flex;
+            overflow-x: hidden;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .resource-slide {
+            flex: 0 0 100%;
+            scroll-snap-align: start;
+            transition: all 0.5s ease;
+        }
+        
+        .carousel-dots {
+            display: flex;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+        
+        .carousel-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            margin: 0 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .carousel-dot.active {
+            background: rgba(255, 255, 255, 0.9);
+            transform: scale(1.2);
+        }
+        
+        .flip-card {
+            perspective: 1000px;
+            height: 100%;
+        }
+        
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+        }
+        
+        .flip-card.flipped .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+        
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+        
+        .flip-card-back {
+            transform: rotateY(180deg);
+            background: linear-gradient(135deg, #4b6cb7 0%, #182848 100%);
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        .floating {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .resource-progress-bar {
+            height: 8px;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+        
+        .resource-progress-fill {
+            height: 100%;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.8);
+            transition: width 1s ease-in-out;
+        }
     </style>
 </head>
 <body class="min-h-screen p-4 md:p-8">
@@ -378,6 +535,475 @@
             </div>
         </div>
         
+        <!-- Scaffolding Resources Section -->
+        <div class="dashboard-section mb-8">
+            <h2 class="text-xl font-semibold mb-4 flex items-center">
+                <svg class="w-6 h-6 mr-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M3 6H21M3 12H21M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M4 3V21M12 3V21M20 3V21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                Scaffolding Resources
+            </h2>
+            
+            <div class="mb-4">
+                <div class="resource-carousel" id="resource-carousel">
+                    <!-- Materials Slide -->
+                    <div class="resource-slide p-1">
+                        <div class="resource-card materials p-5 h-full">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-lg font-semibold">Scaffolding Materials</h3>
+                                <div class="bg-white bg-opacity-20 px-3 py-1 rounded-full text-sm">
+                                    300 MT
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                <div class="flip-card">
+                                    <div class="flip-card-inner">
+                                        <div class="flip-card-front p-4 bg-blue-800 bg-opacity-50 rounded-xl">
+                                            <div class="flex items-center">
+                                                <svg class="w-10 h-10 mr-3" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <rect x="2" y="4" width="20" height="2" rx="1" fill="white"/>
+                                                    <rect x="2" y="10" width="20" height="2" rx="1" fill="white"/>
+                                                    <rect x="2" y="16" width="20" height="2" rx="1" fill="white"/>
+                                                </svg>
+                                                <div>
+                                                    <h4 class="font-medium">Tubes</h4>
+                                                    <p class="text-sm text-blue-100">120 MT</p>
+                                                </div>
+                                            </div>
+                                            <div class="resource-progress-bar mt-3">
+                                                <div class="resource-progress-fill" style="width: 40%"></div>
+                                            </div>
+                                            <p class="text-xs text-right mt-1">40% of total</p>
+                                        </div>
+                                        <div class="flip-card-back p-4">
+                                            <h4 class="font-medium mb-2">Tubes Details</h4>
+                                            <ul class="text-sm space-y-2">
+                                                <li>• Standard size: 48.3mm diameter</li>
+                                                <li>• Length: 1.0m to 6.0m</li>
+                                                <li>• Material: Galvanized steel</li>
+                                                <li>• Usage: Main vertical supports</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="flip-card">
+                                    <div class="flip-card-inner">
+                                        <div class="flip-card-front p-4 bg-blue-800 bg-opacity-50 rounded-xl">
+                                            <div class="flex items-center">
+                                                <svg class="w-10 h-10 mr-3" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M2 12L22 12" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                                                    <path d="M2 6L22 6" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                                                    <path d="M2 18L22 18" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                                                </svg>
+                                                <div>
+                                                    <h4 class="font-medium">Ledgers</h4>
+                                                    <p class="text-sm text-blue-100">90 MT</p>
+                                                </div>
+                                            </div>
+                                            <div class="resource-progress-bar mt-3">
+                                                <div class="resource-progress-fill" style="width: 30%"></div>
+                                            </div>
+                                            <p class="text-xs text-right mt-1">30% of total</p>
+                                        </div>
+                                        <div class="flip-card-back p-4">
+                                            <h4 class="font-medium mb-2">Ledgers Details</h4>
+                                            <ul class="text-sm space-y-2">
+                                                <li>• Standard sizes: 1.0m to 3.0m</li>
+                                                <li>• Material: Galvanized steel</li>
+                                                <li>• Usage: Horizontal supports</li>
+                                                <li>• Connection: Wedge fittings</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="flip-card">
+                                    <div class="flip-card-inner">
+                                        <div class="flip-card-front p-4 bg-blue-800 bg-opacity-50 rounded-xl">
+                                            <div class="flex items-center">
+                                                <svg class="w-10 h-10 mr-3" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M4 4H20V20H4V4Z" stroke="white" stroke-width="2"/>
+                                                    <path d="M4 12H20" stroke="white" stroke-width="2"/>
+                                                    <path d="M12 4V20" stroke="white" stroke-width="2"/>
+                                                </svg>
+                                                <div>
+                                                    <h4 class="font-medium">Boards</h4>
+                                                    <p class="text-sm text-blue-100">60 MT</p>
+                                                </div>
+                                            </div>
+                                            <div class="resource-progress-bar mt-3">
+                                                <div class="resource-progress-fill" style="width: 20%"></div>
+                                            </div>
+                                            <p class="text-xs text-right mt-1">20% of total</p>
+                                        </div>
+                                        <div class="flip-card-back p-4">
+                                            <h4 class="font-medium mb-2">Boards Details</h4>
+                                            <ul class="text-sm space-y-2">
+                                                <li>• Dimensions: 225mm x 38mm</li>
+                                                <li>• Material: Treated timber</li>
+                                                <li>• Length: 1.2m to 3.9m</li>
+                                                <li>• Usage: Working platforms</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="flip-card">
+                                    <div class="flip-card-inner">
+                                        <div class="flip-card-front p-4 bg-blue-800 bg-opacity-50 rounded-xl">
+                                            <div class="flex items-center">
+                                                <svg class="w-10 h-10 mr-3" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <circle cx="12" cy="12" r="3" fill="white"/>
+                                                    <path d="M12 5V3" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                                                    <path d="M12 21V19" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                                                    <path d="M16.95 7.05L18.36 5.64" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                                                    <path d="M5.64 18.36L7.05 16.95" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                                                    <path d="M19 12H21" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                                                    <path d="M3 12H5" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                                                    <path d="M16.95 16.95L18.36 18.36" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                                                    <path d="M5.64 5.64L7.05 7.05" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                                                </svg>
+                                                <div>
+                                                    <h4 class="font-medium">Fittings</h4>
+                                                    <p class="text-sm text-blue-100">30 MT</p>
+                                                </div>
+                                            </div>
+                                            <div class="resource-progress-bar mt-3">
+                                                <div class="resource-progress-fill" style="width: 10%"></div>
+                                            </div>
+                                            <p class="text-xs text-right mt-1">10% of total</p>
+                                        </div>
+                                        <div class="flip-card-back p-4">
+                                            <h4 class="font-medium mb-2">Fittings Details</h4>
+                                            <ul class="text-sm space-y-2">
+                                                <li>• Types: Fixed, swivel, sleeve</li>
+                                                <li>• Material: Drop-forged steel</li>
+                                                <li>• Finish: Hot-dip galvanized</li>
+                                                <li>• Usage: Connecting components</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-4">
+                                <h4 class="text-sm font-medium mb-2">Material Utilization</h4>
+                                <div class="resource-progress-bar">
+                                    <div class="resource-progress-fill" style="width: 65%"></div>
+                                </div>
+                                <div class="flex justify-between text-xs mt-1">
+                                    <span>Currently in use: 195 MT</span>
+                                    <span>65% utilized</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Manpower Slide -->
+                    <div class="resource-slide p-1">
+                        <div class="resource-card manpower p-5 h-full">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-lg font-semibold">Scaffolding Team</h3>
+                                <div class="bg-white bg-opacity-20 px-3 py-1 rounded-full text-sm">
+                                    37 Personnel
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                <div class="resource-item">
+                                    <div class="resource-item-icon">
+                                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M12 12C14.2091 12 16 10.2091 16 8C16 5.79086 14.2091 4 12 4C9.79086 4 8 5.79086 8 8C8 10.2091 9.79086 12 12 12Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                            <path d="M12 12C14.2091 12 16 10.2091 16 8C16 5.79086 14.2091 4 12 4C9.79086 4 8 5.79086 8 8C8 10.2091 9.79086 12 12 12Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                            <path d="M6 21V19C6 17.9391 6.42143 16.9217 7.17157 16.1716C7.92172 15.4214 8.93913 15 10 15H14C15.0609 15 16.0783 15.4214 16.8284 16.1716C17.5786 16.9217 18 17.9391 18 19V21" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                            <path d="M19 8H20M4 8H5M12 1V2" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-medium">Scaffolders</h4>
+                                        <p class="text-xs text-green-100">30 personnel</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="resource-item">
+                                    <div class="resource-item-icon">
+                                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M12 12C14.2091 12 16 10.2091 16 8C16 5.79086 14.2091 4 12 4C9.79086 4 8 5.79086 8 8C8 10.2091 9.79086 12 12 12Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                            <path d="M6 21V19C6 17.9391 6.42143 16.9217 7.17157 16.1716C7.92172 15.4214 8.93913 15 10 15H14C15.0609 15 16.0783 15.4214 16.8284 16.1716C17.5786 16.9217 18 17.9391 18 19V21" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                            <path d="M12 4L12 2M18 8L20 8M4 8L6 8" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-medium">Supervisors</h4>
+                                        <p class="text-xs text-green-100">4 personnel</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="resource-item">
+                                    <div class="resource-item-icon">
+                                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M12 12C14.2091 12 16 10.2091 16 8C16 5.79086 14.2091 4 12 4C9.79086 4 8 5.79086 8 8C8 10.2091 9.79086 12 12 12Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                            <path d="M6 21V19C6 17.9391 6.42143 16.9217 7.17157 16.1716C7.92172 15.4214 8.93913 15 10 15H14C15.0609 15 16.0783 15.4214 16.8284 16.1716C17.5786 16.9217 18 17.9391 18 19V21" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                            <path d="M9 9H9.01M15 9H15.01" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                            <path d="M9 15L15 21" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-medium">Safety Officer</h4>
+                                        <p class="text-xs text-green-100">1 personnel</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="resource-item">
+                                    <div class="resource-item-icon">
+                                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M14 3V7C14 7.26522 14.1054 7.51957 14.2929 7.70711C14.4804 7.89464 14.7348 8 15 8H19" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                            <path d="M17 21H7C6.46957 21 5.96086 20.7893 5.58579 20.4142C5.21071 20.0391 5 19.5304 5 19V5C5 4.46957 5.21071 3.96086 5.58579 3.58579C5.96086 3.21071 6.46957 3 7 3H14L19 8V19C19 19.5304 18.7893 20.0391 18.4142 20.4142C18.0391 20.7893 17.5304 21 17 21Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                            <path d="M9 9H10M9 13H15M9 17H15" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-medium">Planner</h4>
+                                        <p class="text-xs text-green-100">1 personnel</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="resource-item">
+                                    <div class="resource-item-icon">
+                                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M16 6L18 8L22 4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                            <path d="M8 14H10C10.5304 14 11.0391 14.2107 11.4142 14.5858C11.7893 14.9609 12 15.4696 12 16V19C12 19.5304 11.7893 20.0391 11.4142 20.4142C11.0391 20.7893 10.5304 21 10 21H8C7.46957 21 6.96086 20.7893 6.58579 20.4142C6.21071 20.0391 6 19.5304 6 19V16C6 15.4696 6.21071 14.9609 6.58579 14.5858C6.96086 14.2107 7.46957 14 8 14Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                            <path d="M14 14H16C16.5304 14 17.0391 14.2107 17.4142 14.5858C17.7893 14.9609 18 15.4696 18 16V19C18 19.5304 17.7893 20.0391 17.4142 20.4142C17.0391 20.7893 16.5304 21 16 21H14C13.4696 21 12.9609 20.7893 12.5858 20.4142C12.2107 20.0391 12 19.5304 12 19V16C12 15.4696 12.2107 14.9609 12.5858 14.5858C12.9609 14.2107 13.4696 14 14 14Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                            <path d="M6 10V4C6 3.46957 6.21071 2.96086 6.58579 2.58579C6.96086 2.21071 7.46957 2 8 2H16C16.5304 2 17.0391 2.21071 17.4142 2.58579C17.7893 2.96086 18 3.46957 18 4V10" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-medium">Winger Driver</h4>
+                                        <p class="text-xs text-green-100">1 personnel</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="resource-item">
+                                    <div class="resource-item-icon">
+                                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M16 3H1V16H16V3Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                            <path d="M16 8H20L23 11V16H16V8Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                            <circle cx="5.5" cy="18.5" r="2.5" stroke="white" stroke-width="2"/>
+                                            <circle cx="18.5" cy="18.5" r="2.5" stroke="white" stroke-width="2"/>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-medium">Truck Driver</h4>
+                                        <p class="text-xs text-green-100">1 personnel</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-4">
+                                <h4 class="text-sm font-medium mb-2">Team Allocation</h4>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
+                                    <div>
+                                        <div class="text-xs mb-1">Area A: 12 personnel</div>
+                                        <div class="resource-progress-bar">
+                                            <div class="resource-progress-fill" style="width: 32%"></div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="text-xs mb-1">Area B: 15 personnel</div>
+                                        <div class="resource-progress-bar">
+                                            <div class="resource-progress-fill" style="width: 41%"></div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="text-xs mb-1">Area C: 10 personnel</div>
+                                        <div class="resource-progress-bar">
+                                            <div class="resource-progress-fill" style="width: 27%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Equipment Slide -->
+                    <div class="resource-slide p-1">
+                        <div class="resource-card equipment p-5 h-full">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-lg font-semibold">Equipment & Logistics</h3>
+                                <div class="bg-white bg-opacity-20 px-3 py-1 rounded-full text-sm">
+                                    Active Fleet
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                <div class="bg-yellow-800 bg-opacity-50 p-4 rounded-xl">
+                                    <div class="flex items-center mb-3">
+                                        <svg class="w-10 h-10 mr-3" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M16 3H1V16H16V3Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                            <path d="M16 8H20L23 11V16H16V8Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                            <circle cx="5.5" cy="18.5" r="2.5" stroke="white" stroke-width="2"/>
+                                            <circle cx="18.5" cy="18.5" r="2.5" stroke="white" stroke-width="2"/>
+                                        </svg>
+                                        <div>
+                                            <h4 class="font-medium">Material Truck</h4>
+                                            <p class="text-xs text-yellow-100">1 vehicle</p>
+                                        </div>
+                                    </div>
+                                    <div class="text-xs space-y-1">
+                                        <div class="flex justify-between">
+                                            <span>Status:</span>
+                                            <span class="font-medium text-green-300">Operational</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span>Last Maintenance:</span>
+                                            <span>3 days ago</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span>Daily Trips:</span>
+                                            <span>4-6 trips</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="bg-yellow-800 bg-opacity-50 p-4 rounded-xl">
+                                    <div class="flex items-center mb-3">
+                                        <svg class="w-10 h-10 mr-3" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M12 4L12 20" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                                            <path d="M4 12L20 12" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                                            <circle cx="12" cy="12" r="9" stroke="white" stroke-width="2"/>
+                                            <path d="M12 17V17.01" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                                            <path d="M12 7V7.01" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                                            <path d="M7 12H7.01" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                                            <path d="M17 12H17.01" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                                        </svg>
+                                        <div>
+                                            <h4 class="font-medium">Winger Vehicle</h4>
+                                            <p class="text-xs text-yellow-100">1 vehicle</p>
+                                        </div>
+                                    </div>
+                                    <div class="text-xs space-y-1">
+                                        <div class="flex justify-between">
+                                            <span>Status:</span>
+                                            <span class="font-medium text-green-300">Operational</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span>Last Maintenance:</span>
+                                            <span>1 week ago</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span>Daily Usage:</span>
+                                            <span>8-10 hours</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="bg-yellow-800 bg-opacity-50 p-4 rounded-xl">
+                                    <div class="flex items-center mb-3">
+                                        <svg class="w-10 h-10 mr-3" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M12 8V16" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                                            <path d="M8 12L16 12" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                                            <rect x="2" y="6" width="20" height="12" rx="2" stroke="white" stroke-width="2"/>
+                                            <path d="M6 18V20" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                                            <path d="M18 18V20" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                                        </svg>
+                                        <div>
+                                            <h4 class="font-medium">Safety Equipment</h4>
+                                            <p class="text-xs text-yellow-100">40 sets</p>
+                                        </div>
+                                    </div>
+                                    <div class="text-xs space-y-1">
+                                        <div class="flex justify-between">
+                                            <span>Harnesses:</span>
+                                            <span>40 units</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span>Helmets:</span>
+                                            <span>40 units</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span>Last Inspection:</span>
+                                            <span>2 days ago</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="bg-yellow-800 bg-opacity-50 p-4 rounded-xl">
+                                    <div class="flex items-center mb-3">
+                                        <svg class="w-10 h-10 mr-3" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M3 21H21" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                                            <path d="M5 21V7L13 3V21" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                            <path d="M19 21V11L13 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                            <path d="M9 9V9.01" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                                            <path d="M9 13V13.01" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                                            <path d="M9 17V17.01" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                                        </svg>
+                                        <div>
+                                            <h4 class="font-medium">Site Facilities</h4>
+                                            <p class="text-xs text-yellow-100">3 units</p>
+                                        </div>
+                                    </div>
+                                    <div class="text-xs space-y-1">
+                                        <div class="flex justify-between">
+                                            <span>Storage Container:</span>
+                                            <span>2 units</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span>Site Office:</span>
+                                            <span>1 unit</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span>Condition:</span>
+                                            <span class="font-medium text-green-300">Good</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-4">
+                                <h4 class="text-sm font-medium mb-2">Equipment Utilization</h4>
+                                <div class="resource-progress-bar">
+                                    <div class="resource-progress-fill" style="width: 75%"></div>
+                                </div>
+                                <div class="flex justify-between text-xs mt-1">
+                                    <span>Current utilization</span>
+                                    <span>75%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="carousel-dots mt-4">
+                    <div class="carousel-dot active" data-slide="0"></div>
+                    <div class="carousel-dot" data-slide="1"></div>
+                    <div class="carousel-dot" data-slide="2"></div>
+                </div>
+            </div>
+            
+            <!-- Resource AI Insights -->
+            <div class="card ai-suggestion p-5 mt-4">
+                <div class="flex items-start">
+                    <div class="mr-4">
+                        <div class="ai-icon">🤖</div>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-medium mb-2">Resource Optimization</h3>
+                        <div class="text-gray-200">
+                            <ul class="list-disc pl-5 space-y-2">
+                                <li>Current scaffolding material utilization is at 65% (195 MT of 300 MT). Consider redistributing 20 MT from Area B to support increased work in Area C.</li>
+                                <li>Team distribution analysis shows potential for 5% productivity improvement by reallocating 3 scaffolders from Area B to Area A.</li>
+                                <li>Equipment maintenance schedule shows truck inspection due in 4 days. Recommend scheduling during low activity period (Sunday).</li>
+                                <li>Based on current project timeline, material requirements will peak next week. Consider staging additional 30 MT of tubes and ledgers.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
         <!-- Summary Stats -->
         <div class="dashboard-section mb-8">
             <h2 class="text-xl font-semibold mb-4">Overall Performance</h2>
@@ -454,6 +1080,7 @@
         let transitionInterval;
         let refreshInterval;
         let chartInstances = {};
+        let currentResourceSlide = 0;
         
         // Security PIN
         const CORRECT_PIN = "119034";
@@ -466,6 +1093,8 @@
         document.addEventListener('DOMContentLoaded', () => {
             updateCurrentDate();
             setupPinSecurity();
+            setupResourceCarousel();
+            setupFlipCards();
             
             // Only load data after successful PIN entry
             // loadData() will be called after PIN verification
@@ -574,6 +1203,56 @@
                     // Escape key
                     document.querySelector('.pin-key[data-key="clear"]').click();
                 }
+            });
+        }
+        
+        // Setup resource carousel
+        function setupResourceCarousel() {
+            const carousel = document.getElementById('resource-carousel');
+            const dots = document.querySelectorAll('.carousel-dot');
+            
+            // Set up dot click handlers
+            dots.forEach((dot, index) => {
+                dot.addEventListener('click', () => {
+                    goToSlide(index);
+                });
+            });
+            
+            // Auto rotate slides every 15 seconds
+            setInterval(() => {
+                goToSlide((currentResourceSlide + 1) % 3);
+            }, 15000);
+            
+            function goToSlide(slideIndex) {
+                // Update current slide
+                currentResourceSlide = slideIndex;
+                
+                // Scroll to the slide
+                const slideWidth = carousel.offsetWidth;
+                carousel.scrollTo({
+                    left: slideWidth * slideIndex,
+                    behavior: 'smooth'
+                });
+                
+                // Update active dot
+                dots.forEach((dot, index) => {
+                    if (index === slideIndex) {
+                        dot.classList.add('active');
+                    } else {
+                        dot.classList.remove('active');
+                    }
+                });
+            }
+        }
+        
+        // Setup flip cards
+        function setupFlipCards() {
+            const flipCards = document.querySelectorAll('.flip-card');
+            
+            flipCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    card.classList.toggle('flipped');
+                });
             });
         }
         
@@ -1027,5 +1706,5 @@
             });
         }
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'966c14be50df8826',t:'MTc1Mzc4NjQ5Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'966c24a38247897b',t:'MTc1Mzc4NzE0Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
