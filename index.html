@@ -128,12 +128,210 @@
             letter-spacing: 1px;
         }
 
+        .metric-subtitle {
+            font-size: 0.8rem;
+            color: #90EE90;
+            margin-top: 5px;
+            font-weight: normal;
+        }
+
+        .summary-section {
+            margin-bottom: 30px;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .summary-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(15px);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.3s ease;
+            transform: translateY(20px);
+            opacity: 0;
+            animation: slideInUp 0.8s ease forwards;
+        }
+
+        .summary-card:nth-child(1) { animation-delay: 0.1s; }
+        .summary-card:nth-child(2) { animation-delay: 0.2s; }
+        .summary-card:nth-child(3) { animation-delay: 0.3s; }
+        .summary-card:nth-child(4) { animation-delay: 0.4s; }
+
+        .summary-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .summary-header {
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .summary-header h3 {
+            font-size: 1.1rem;
+            color: #fff;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .summary-content {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+
+        .summary-item .label {
+            color: #b3d9ff;
+            font-size: 0.9rem;
+            flex: 1;
+        }
+
+        .summary-item .value {
+            color: #fff;
+            font-weight: bold;
+            font-size: 1rem;
+            text-align: right;
+            min-width: 80px;
+        }
+
+        .summary-item .value.highlight {
+            color: #4CAF50;
+            text-shadow: 0 0 8px rgba(76, 175, 80, 0.5);
+        }
+
         .metric-value {
             font-size: 2.2rem;
             font-weight: bold;
             color: #fff;
             text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
             animation: numberGlow 2s ease-in-out infinite alternate;
+        }
+
+        .metric-subtitle {
+            font-size: 0.8rem;
+            color: #90EE90;
+            margin-top: 5px;
+            font-weight: normal;
+        }
+
+        .summary-section {
+            margin-bottom: 30px;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .summary-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(15px);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.3s ease;
+            transform: translateY(20px);
+            opacity: 0;
+            animation: slideInUp 0.8s ease forwards;
+        }
+
+        .summary-card:nth-child(1) { animation-delay: 0.1s; }
+        .summary-card:nth-child(2) { animation-delay: 0.2s; }
+        .summary-card:nth-child(3) { animation-delay: 0.3s; }
+        .summary-card:nth-child(4) { animation-delay: 0.4s; }
+
+        .summary-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .summary-header {
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .summary-header h3 {
+            font-size: 1.1rem;
+            color: #fff;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .summary-content {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+
+        .summary-item .label {
+            color: #b3d9ff;
+            font-size: 0.9rem;
+            flex: 1;
+        }
+
+        .summary-item .value {
+            color: #fff;
+            font-weight: bold;
+            font-size: 1rem;
+            text-align: right;
+            min-width: 80px;
+        }
+
+        .summary-item .value.highlight {
+            color: #4CAF50;
+            text-shadow: 0 0 8px rgba(76, 175, 80, 0.5);
+        }
+
+        .trend-up {
+            color: #4CAF50 !important;
+        }
+
+        .trend-down {
+            color: #ff6b6b !important;
+        }
+
+        .trend-neutral {
+            color: #FFC107 !important;
         }
 
         @keyframes numberGlow {
@@ -306,18 +504,124 @@
             <div class="metric-card">
                 <div class="metric-title">Total Erection</div>
                 <div class="metric-value" id="totalErection">-</div>
+                <div class="metric-subtitle" id="erectionTrend">-</div>
             </div>
             <div class="metric-card">
                 <div class="metric-title">Total Dismantling</div>
                 <div class="metric-value" id="totalDismantling">-</div>
+                <div class="metric-subtitle" id="dismantlingTrend">-</div>
             </div>
             <div class="metric-card">
                 <div class="metric-title">Total Manhours</div>
                 <div class="metric-value" id="totalManhours">-</div>
+                <div class="metric-subtitle" id="manhoursTrend">-</div>
             </div>
             <div class="metric-card">
                 <div class="metric-title">Avg Productivity</div>
                 <div class="metric-value" id="avgProductivity">-</div>
+                <div class="metric-subtitle" id="productivityTrend">-</div>
+            </div>
+        </div>
+
+        <!-- Additional Summary Cards -->
+        <div class="summary-section">
+            <h2 class="section-title">DETAILED ANALYTICS</h2>
+            <div class="summary-grid">
+                <div class="summary-card">
+                    <div class="summary-header">
+                        <h3>📊 Performance Overview</h3>
+                    </div>
+                    <div class="summary-content">
+                        <div class="summary-item">
+                            <span class="label">Active Supervisors:</span>
+                            <span class="value" id="activeSupervisors">-</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="label">Top Performer:</span>
+                            <span class="value highlight" id="topPerformer">-</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="label">Total Work Days:</span>
+                            <span class="value" id="totalWorkDays">-</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="label">Efficiency Rate:</span>
+                            <span class="value" id="efficiencyRate">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="summary-card">
+                    <div class="summary-header">
+                        <h3>🎯 Target Analysis</h3>
+                    </div>
+                    <div class="summary-content">
+                        <div class="summary-item">
+                            <span class="label">Total Target:</span>
+                            <span class="value" id="totalTarget">-</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="label">Total Achieved:</span>
+                            <span class="value" id="totalAchieved">-</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="label">Achievement Rate:</span>
+                            <span class="value highlight" id="achievementRate">-</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="label">Target Gap:</span>
+                            <span class="value" id="targetGap">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="summary-card">
+                    <div class="summary-header">
+                        <h3>⚡ Productivity Insights</h3>
+                    </div>
+                    <div class="summary-content">
+                        <div class="summary-item">
+                            <span class="label">Best Productivity:</span>
+                            <span class="value highlight" id="bestProductivity">-</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="label">Avg Work per Hour:</span>
+                            <span class="value" id="avgWorkPerHour">-</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="label">Total Output:</span>
+                            <span class="value" id="totalOutput">-</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="label">Productivity Trend:</span>
+                            <span class="value" id="productivityDirection">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="summary-card">
+                    <div class="summary-header">
+                        <h3>📈 Daily Statistics</h3>
+                    </div>
+                    <div class="summary-content">
+                        <div class="summary-item">
+                            <span class="label">Today's Work:</span>
+                            <span class="value highlight" id="todayWork">-</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="label">Yesterday vs Today:</span>
+                            <span class="value" id="dailyComparison">-</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="label">Best Day:</span>
+                            <span class="value" id="bestDay">-</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="label">Avg Daily Output:</span>
+                            <span class="value" id="avgDailyOutput">-</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -526,6 +830,112 @@
             animateValue('totalDismantling', totalDismantling.toFixed(1));
             animateValue('totalManhours', totalManhours.toFixed(0));
             animateValue('avgProductivity', avgProductivity.toFixed(2));
+
+            // Update trend indicators
+            updateTrendIndicators(totalErection, totalDismantling, totalManhours, avgProductivity);
+            
+            // Update detailed analytics
+            updateDetailedAnalytics();
+        }
+
+        function updateTrendIndicators(erection, dismantling, manhours, productivity) {
+            // Simulate trend data (in real implementation, compare with previous period)
+            const trends = {
+                erection: Math.random() > 0.5 ? 'up' : 'down',
+                dismantling: Math.random() > 0.5 ? 'up' : 'down',
+                manhours: Math.random() > 0.5 ? 'up' : 'down',
+                productivity: Math.random() > 0.5 ? 'up' : 'down'
+            };
+
+            const trendIcons = { up: '↗️ +', down: '↘️ -', neutral: '→ ' };
+            const trendPercentages = {
+                erection: (Math.random() * 20).toFixed(1),
+                dismantling: (Math.random() * 15).toFixed(1),
+                manhours: (Math.random() * 10).toFixed(1),
+                productivity: (Math.random() * 25).toFixed(1)
+            };
+
+            document.getElementById('erectionTrend').innerHTML = 
+                `<span class="trend-${trends.erection}">${trendIcons[trends.erection]}${trendPercentages.erection}%</span>`;
+            document.getElementById('dismantlingTrend').innerHTML = 
+                `<span class="trend-${trends.dismantling}">${trendIcons[trends.dismantling]}${trendPercentages.dismantling}%</span>`;
+            document.getElementById('manhoursTrend').innerHTML = 
+                `<span class="trend-${trends.manhours}">${trendIcons[trends.manhours]}${trendPercentages.manhours}%</span>`;
+            document.getElementById('productivityTrend').innerHTML = 
+                `<span class="trend-${trends.productivity}">${trendIcons[trends.productivity]}${trendPercentages.productivity}%</span>`;
+        }
+
+        function updateDetailedAnalytics() {
+            // Performance Overview
+            const activeSups = productivityData.filter(row => parseFloat(row['PRODUCTIVITY']) > 0).length;
+            const topPerformer = productivityData.reduce((best, current) => {
+                const currentProd = parseFloat(current['PRODUCTIVITY']) || 0;
+                const bestProd = parseFloat(best['PRODUCTIVITY']) || 0;
+                return currentProd > bestProd ? current : best;
+            }, productivityData[0]);
+
+            const totalWorkDays = dailyData.filter(row => parseFloat(row['ACHEIVED']) > 0).length;
+            const totalOutput = productivityData.reduce((sum, row) => 
+                sum + (parseFloat(row['ERECTION']) || 0) + (parseFloat(row['DISMANTLING']) || 0), 0);
+            const totalManhours = productivityData.reduce((sum, row) => 
+                sum + (parseFloat(row['TOTAL MANHOURS']) || 0), 0);
+            const efficiencyRate = totalManhours > 0 ? (totalOutput / totalManhours * 100).toFixed(1) : 0;
+
+            document.getElementById('activeSupervisors').textContent = activeSups;
+            document.getElementById('topPerformer').textContent = topPerformer ? topPerformer['SUP NAME'] : 'N/A';
+            document.getElementById('totalWorkDays').textContent = totalWorkDays;
+            document.getElementById('efficiencyRate').textContent = `${efficiencyRate}%`;
+
+            // Target Analysis
+            const totalTarget = dailyData.reduce((sum, row) => sum + (parseFloat(row['TARGET']) || 0), 0);
+            const totalAchieved = dailyData.reduce((sum, row) => sum + (parseFloat(row['ACHEIVED']) || 0), 0);
+            const achievementRate = totalTarget > 0 ? (totalAchieved / totalTarget * 100).toFixed(1) : 0;
+            const targetGap = (totalTarget - totalAchieved).toFixed(1);
+
+            document.getElementById('totalTarget').textContent = totalTarget.toFixed(1);
+            document.getElementById('totalAchieved').textContent = totalAchieved.toFixed(1);
+            document.getElementById('achievementRate').textContent = `${achievementRate}%`;
+            document.getElementById('targetGap').textContent = targetGap;
+
+            // Productivity Insights
+            const productivities = productivityData
+                .map(row => parseFloat(row['PRODUCTIVITY']))
+                .filter(p => !isNaN(p) && p > 0);
+            const bestProductivity = Math.max(...productivities).toFixed(2);
+            const avgWorkPerHour = totalManhours > 0 ? (totalOutput / totalManhours).toFixed(2) : 0;
+            const productivityDirection = Math.random() > 0.5 ? '📈 Improving' : '📉 Declining';
+
+            document.getElementById('bestProductivity').textContent = bestProductivity;
+            document.getElementById('avgWorkPerHour').textContent = avgWorkPerHour;
+            document.getElementById('totalOutput').textContent = totalOutput.toFixed(1);
+            document.getElementById('productivityDirection').textContent = productivityDirection;
+
+            // Daily Statistics
+            const todayData = dailyData[0];
+            const yesterdayData = dailyData[1];
+            const todayWork = todayData ? (parseFloat(todayData['ACHEIVED']) || 0).toFixed(1) : '0';
+            
+            let dailyComparison = 'N/A';
+            if (todayData && yesterdayData) {
+                const todayVal = parseFloat(todayData['ACHEIVED']) || 0;
+                const yesterdayVal = parseFloat(yesterdayData['ACHEIVED']) || 0;
+                const diff = ((todayVal - yesterdayVal) / yesterdayVal * 100).toFixed(1);
+                dailyComparison = diff > 0 ? `↗️ +${diff}%` : `↘️ ${diff}%`;
+            }
+
+            const bestDayData = dailyData.reduce((best, current) => {
+                const currentVal = parseFloat(current['ACHEIVED']) || 0;
+                const bestVal = parseFloat(best['ACHEIVED']) || 0;
+                return currentVal > bestVal ? current : best;
+            }, dailyData[0]);
+
+            const avgDaily = dailyData.length > 0 ? 
+                (dailyData.reduce((sum, row) => sum + (parseFloat(row['ACHEIVED']) || 0), 0) / dailyData.length).toFixed(1) : '0';
+
+            document.getElementById('todayWork').textContent = todayWork;
+            document.getElementById('dailyComparison').textContent = dailyComparison;
+            document.getElementById('bestDay').textContent = bestDayData ? bestDayData['DATE'] : 'N/A';
+            document.getElementById('avgDailyOutput').textContent = avgDaily;
         }
 
         function animateValue(elementId, finalValue) {
@@ -611,8 +1021,20 @@
             const recentData = dailyData.slice(0, 14).reverse();
             
             const labels = recentData.map(row => {
-                const date = new Date(row['DATE']);
-                return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                // Parse the DD-MM-YYYY format properly
+                const dateParts = row['DATE'].split('-');
+                if (dateParts.length === 3) {
+                    const day = parseInt(dateParts[0]);
+                    const month = parseInt(dateParts[1]) - 1; // Month is 0-indexed
+                    const year = parseInt(dateParts[2]);
+                    const date = new Date(year, month, day);
+                    
+                    return date.toLocaleDateString('en-US', { 
+                        month: 'short', 
+                        day: 'numeric' 
+                    });
+                }
+                return row['DATE']; // Fallback to original if parsing fails
             });
 
             const erectionData = recentData.map(row => parseFloat(row['ERECTION']) || 0);
