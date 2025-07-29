@@ -294,10 +294,6 @@
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
         }
         
-        .resource-card.materials {
-            background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
-        }
-        
         .resource-card.manpower {
             background: linear-gradient(135deg, #10b981 0%, #065f46 100%);
         }
@@ -516,7 +512,7 @@
         
         <div class="refresh-indicator">
             <div class="pulse-dot"></div>
-            <span>Auto-refreshing</span>
+            <span id="refresh-text">Auto-refreshing hourly</span>
         </div>
         
         <!-- Top Performer Banner -->
@@ -547,161 +543,6 @@
             
             <div class="mb-4">
                 <div class="resource-carousel" id="resource-carousel">
-                    <!-- Materials Slide -->
-                    <div class="resource-slide p-1">
-                        <div class="resource-card materials p-5 h-full">
-                            <div class="flex items-center justify-between mb-4">
-                                <h3 class="text-lg font-semibold">Scaffolding Materials</h3>
-                                <div class="bg-white bg-opacity-20 px-3 py-1 rounded-full text-sm">
-                                    300 MT
-                                </div>
-                            </div>
-                            
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                                <div class="flip-card">
-                                    <div class="flip-card-inner">
-                                        <div class="flip-card-front p-4 bg-blue-800 bg-opacity-50 rounded-xl">
-                                            <div class="flex items-center">
-                                                <svg class="w-10 h-10 mr-3" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <rect x="2" y="4" width="20" height="2" rx="1" fill="white"/>
-                                                    <rect x="2" y="10" width="20" height="2" rx="1" fill="white"/>
-                                                    <rect x="2" y="16" width="20" height="2" rx="1" fill="white"/>
-                                                </svg>
-                                                <div>
-                                                    <h4 class="font-medium">Tubes</h4>
-                                                    <p class="text-sm text-blue-100">120 MT</p>
-                                                </div>
-                                            </div>
-                                            <div class="resource-progress-bar mt-3">
-                                                <div class="resource-progress-fill" style="width: 40%"></div>
-                                            </div>
-                                            <p class="text-xs text-right mt-1">40% of total</p>
-                                        </div>
-                                        <div class="flip-card-back p-4">
-                                            <h4 class="font-medium mb-2">Tubes Details</h4>
-                                            <ul class="text-sm space-y-2">
-                                                <li>• Standard size: 48.3mm diameter</li>
-                                                <li>• Length: 1.0m to 6.0m</li>
-                                                <li>• Material: Galvanized steel</li>
-                                                <li>• Usage: Main vertical supports</li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="flip-card">
-                                    <div class="flip-card-inner">
-                                        <div class="flip-card-front p-4 bg-blue-800 bg-opacity-50 rounded-xl">
-                                            <div class="flex items-center">
-                                                <svg class="w-10 h-10 mr-3" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path d="M2 12L22 12" stroke="white" stroke-width="2" stroke-linecap="round"/>
-                                                    <path d="M2 6L22 6" stroke="white" stroke-width="2" stroke-linecap="round"/>
-                                                    <path d="M2 18L22 18" stroke="white" stroke-width="2" stroke-linecap="round"/>
-                                                </svg>
-                                                <div>
-                                                    <h4 class="font-medium">Ledgers</h4>
-                                                    <p class="text-sm text-blue-100">90 MT</p>
-                                                </div>
-                                            </div>
-                                            <div class="resource-progress-bar mt-3">
-                                                <div class="resource-progress-fill" style="width: 30%"></div>
-                                            </div>
-                                            <p class="text-xs text-right mt-1">30% of total</p>
-                                        </div>
-                                        <div class="flip-card-back p-4">
-                                            <h4 class="font-medium mb-2">Ledgers Details</h4>
-                                            <ul class="text-sm space-y-2">
-                                                <li>• Standard sizes: 1.0m to 3.0m</li>
-                                                <li>• Material: Galvanized steel</li>
-                                                <li>• Usage: Horizontal supports</li>
-                                                <li>• Connection: Wedge fittings</li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="flip-card">
-                                    <div class="flip-card-inner">
-                                        <div class="flip-card-front p-4 bg-blue-800 bg-opacity-50 rounded-xl">
-                                            <div class="flex items-center">
-                                                <svg class="w-10 h-10 mr-3" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path d="M4 4H20V20H4V4Z" stroke="white" stroke-width="2"/>
-                                                    <path d="M4 12H20" stroke="white" stroke-width="2"/>
-                                                    <path d="M12 4V20" stroke="white" stroke-width="2"/>
-                                                </svg>
-                                                <div>
-                                                    <h4 class="font-medium">Boards</h4>
-                                                    <p class="text-sm text-blue-100">60 MT</p>
-                                                </div>
-                                            </div>
-                                            <div class="resource-progress-bar mt-3">
-                                                <div class="resource-progress-fill" style="width: 20%"></div>
-                                            </div>
-                                            <p class="text-xs text-right mt-1">20% of total</p>
-                                        </div>
-                                        <div class="flip-card-back p-4">
-                                            <h4 class="font-medium mb-2">Boards Details</h4>
-                                            <ul class="text-sm space-y-2">
-                                                <li>• Dimensions: 225mm x 38mm</li>
-                                                <li>• Material: Treated timber</li>
-                                                <li>• Length: 1.2m to 3.9m</li>
-                                                <li>• Usage: Working platforms</li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="flip-card">
-                                    <div class="flip-card-inner">
-                                        <div class="flip-card-front p-4 bg-blue-800 bg-opacity-50 rounded-xl">
-                                            <div class="flex items-center">
-                                                <svg class="w-10 h-10 mr-3" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <circle cx="12" cy="12" r="3" fill="white"/>
-                                                    <path d="M12 5V3" stroke="white" stroke-width="2" stroke-linecap="round"/>
-                                                    <path d="M12 21V19" stroke="white" stroke-width="2" stroke-linecap="round"/>
-                                                    <path d="M16.95 7.05L18.36 5.64" stroke="white" stroke-width="2" stroke-linecap="round"/>
-                                                    <path d="M5.64 18.36L7.05 16.95" stroke="white" stroke-width="2" stroke-linecap="round"/>
-                                                    <path d="M19 12H21" stroke="white" stroke-width="2" stroke-linecap="round"/>
-                                                    <path d="M3 12H5" stroke="white" stroke-width="2" stroke-linecap="round"/>
-                                                    <path d="M16.95 16.95L18.36 18.36" stroke="white" stroke-width="2" stroke-linecap="round"/>
-                                                    <path d="M5.64 5.64L7.05 7.05" stroke="white" stroke-width="2" stroke-linecap="round"/>
-                                                </svg>
-                                                <div>
-                                                    <h4 class="font-medium">Fittings</h4>
-                                                    <p class="text-sm text-blue-100">30 MT</p>
-                                                </div>
-                                            </div>
-                                            <div class="resource-progress-bar mt-3">
-                                                <div class="resource-progress-fill" style="width: 10%"></div>
-                                            </div>
-                                            <p class="text-xs text-right mt-1">10% of total</p>
-                                        </div>
-                                        <div class="flip-card-back p-4">
-                                            <h4 class="font-medium mb-2">Fittings Details</h4>
-                                            <ul class="text-sm space-y-2">
-                                                <li>• Types: Fixed, swivel, sleeve</li>
-                                                <li>• Material: Drop-forged steel</li>
-                                                <li>• Finish: Hot-dip galvanized</li>
-                                                <li>• Usage: Connecting components</li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="mt-4">
-                                <h4 class="text-sm font-medium mb-2">Material Utilization</h4>
-                                <div class="resource-progress-bar">
-                                    <div class="resource-progress-fill" style="width: 65%"></div>
-                                </div>
-                                <div class="flex justify-between text-xs mt-1">
-                                    <span>Currently in use: 195 MT</span>
-                                    <span>65% utilized</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
                     <!-- Manpower Slide -->
                     <div class="resource-slide p-1">
                         <div class="resource-card manpower p-5 h-full">
@@ -842,6 +683,42 @@
                                 <div class="bg-yellow-800 bg-opacity-50 p-4 rounded-xl">
                                     <div class="flex items-center mb-3">
                                         <svg class="w-10 h-10 mr-3" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <rect x="2" y="4" width="20" height="2" rx="1" fill="white"/>
+                                            <rect x="2" y="10" width="20" height="2" rx="1" fill="white"/>
+                                            <rect x="2" y="16" width="20" height="2" rx="1" fill="white"/>
+                                        </svg>
+                                        <div>
+                                            <h4 class="font-medium">Scaffolding Materials</h4>
+                                            <p class="text-xs text-yellow-100">300 MT</p>
+                                        </div>
+                                    </div>
+                                    <div class="text-xs space-y-1">
+                                        <div class="flex justify-between">
+                                            <span>Tubes:</span>
+                                            <span>120 MT (40%)</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span>Ledgers:</span>
+                                            <span>90 MT (30%)</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span>Boards:</span>
+                                            <span>60 MT (20%)</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span>Fittings:</span>
+                                            <span>30 MT (10%)</span>
+                                        </div>
+                                    </div>
+                                    <div class="resource-progress-bar mt-3">
+                                        <div class="resource-progress-fill" style="width: 65%"></div>
+                                    </div>
+                                    <p class="text-xs text-right mt-1">65% utilized (195 MT in use)</p>
+                                </div>
+                                
+                                <div class="bg-yellow-800 bg-opacity-50 p-4 rounded-xl">
+                                    <div class="flex items-center mb-3">
+                                        <svg class="w-10 h-10 mr-3" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M16 3H1V16H16V3Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                                             <path d="M16 8H20L23 11V16H16V8Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                                             <circle cx="5.5" cy="18.5" r="2.5" stroke="white" stroke-width="2"/>
@@ -979,7 +856,6 @@
                 <div class="carousel-dots mt-4">
                     <div class="carousel-dot active" data-slide="0"></div>
                     <div class="carousel-dot" data-slide="1"></div>
-                    <div class="carousel-dot" data-slide="2"></div>
                 </div>
             </div>
             
@@ -1076,11 +952,9 @@
     <script>
         // Global variables
         let productivityData = [];
-        let currentCardIndex = 0;
-        let transitionInterval;
-        let refreshInterval;
         let chartInstances = {};
         let currentResourceSlide = 0;
+        let nextRefreshTime;
         
         // Security PIN
         const CORRECT_PIN = "119034";
@@ -1094,7 +968,6 @@
             updateCurrentDate();
             setupPinSecurity();
             setupResourceCarousel();
-            setupFlipCards();
             
             // Only load data after successful PIN entry
             // loadData() will be called after PIN verification
@@ -1126,10 +999,8 @@
                             // Initialize dashboard after successful login
                             loadData();
                             
-                            // Set up auto refresh every 5 minutes
-                            refreshInterval = setInterval(() => {
-                                loadData();
-                            }, 5 * 60 * 1000); // 5 minutes
+                            // Set up auto refresh every 1 hour
+                            setupAutoRefresh(60); // 60 minutes
                             
                             // Animate sections on load
                             animateSections();
@@ -1218,11 +1089,6 @@
                 });
             });
             
-            // Auto rotate slides every 15 seconds
-            setInterval(() => {
-                goToSlide((currentResourceSlide + 1) % 3);
-            }, 15000);
-            
             function goToSlide(slideIndex) {
                 // Update current slide
                 currentResourceSlide = slideIndex;
@@ -1245,21 +1111,47 @@
             }
         }
         
-        // Setup flip cards
-        function setupFlipCards() {
-            const flipCards = document.querySelectorAll('.flip-card');
-            
-            flipCards.forEach(card => {
-                card.addEventListener('click', () => {
-                    card.classList.toggle('flipped');
-                });
-            });
-        }
-        
         // Update current date
         function updateCurrentDate() {
             const now = luxon.DateTime.now();
             document.getElementById('current-date').textContent = now.toFormat('EEEE, MMMM d, yyyy - hh:mm a');
+        }
+        
+        // Setup auto refresh
+        function setupAutoRefresh(minutes) {
+            // Calculate next refresh time
+            nextRefreshTime = new Date();
+            nextRefreshTime.setMinutes(nextRefreshTime.getMinutes() + minutes);
+            
+            // Update refresh indicator text
+            updateRefreshIndicator();
+            
+            // Set interval to update the countdown every minute
+            setInterval(() => {
+                updateRefreshIndicator();
+            }, 60000); // Update every minute
+            
+            // Set timeout for actual refresh
+            setTimeout(() => {
+                loadData();
+                setupAutoRefresh(minutes);
+            }, minutes * 60 * 1000);
+        }
+        
+        // Update refresh indicator
+        function updateRefreshIndicator() {
+            const now = new Date();
+            const diffMs = nextRefreshTime - now;
+            const diffMins = Math.floor(diffMs / 60000);
+            
+            const refreshText = document.getElementById('refresh-text');
+            if (diffMins <= 0) {
+                refreshText.textContent = "Refreshing now...";
+            } else if (diffMins === 1) {
+                refreshText.textContent = "Refreshing in 1 minute";
+            } else {
+                refreshText.textContent = `Refreshing in ${diffMins} minutes`;
+            }
         }
         
         // Load data from CSV
@@ -1299,16 +1191,6 @@
             updateCharts();
             generateAIInsights();
             highlightTopPerformer();
-            
-            // Clear previous transition interval if exists
-            if (transitionInterval) {
-                clearInterval(transitionInterval);
-            }
-            
-            // Set up card transitions every 10 seconds
-            transitionInterval = setInterval(() => {
-                transitionCards();
-            }, 10000);
         }
         
         // Update key metrics at the top
@@ -1386,8 +1268,7 @@
                     item.productivity === Math.max(...productivityData.map(d => d.productivity > 0 ? d.productivity : 0));
                 
                 const card = document.createElement('div');
-                card.className = `card p-5 ${isTopPerformer ? 'top-performer' : ''} ${index === currentCardIndex ? 'fade-in' : ''}`;
-                card.setAttribute('data-index', index);
+                card.className = `card p-5 ${isTopPerformer ? 'top-performer' : ''}`;
                 
                 // Add stars for top performer
                 if (isTopPerformer && item.productivity > 0) {
@@ -1446,29 +1327,6 @@
                 
                 cardsContainer.appendChild(card);
             });
-        }
-        
-        // Transition between cards with animation
-        function transitionCards() {
-            const cards = document.querySelectorAll('#productivity-cards .card');
-            if (cards.length === 0) return;
-            
-            // Remove animation class from all cards
-            cards.forEach(card => {
-                card.classList.remove('fade-in');
-            });
-            
-            // Increment current card index
-            currentCardIndex = (currentCardIndex + 1) % cards.length;
-            
-            // Add animation class to current card
-            const currentCard = document.querySelector(`#productivity-cards .card[data-index="${currentCardIndex}"]`);
-            if (currentCard) {
-                currentCard.classList.add('fade-in');
-                
-                // Scroll to the card if needed
-                currentCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            }
         }
         
         // Update charts
@@ -1706,5 +1564,5 @@
             });
         }
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'966c24a38247897b',t:'MTc1Mzc4NzE0Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'966c3db844577f95',t:'MTc1Mzc4ODE3NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
