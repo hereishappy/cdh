@@ -161,12 +161,26 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
+        
+        .highlight-card {
+            background: linear-gradient(135deg, #3b4fd7 0%, #6366f1 100%);
+            animation: glow 3s infinite alternate;
+        }
+        
+        @keyframes glow {
+            0% { box-shadow: 0 0 5px rgba(99, 102, 241, 0.5); }
+            100% { box-shadow: 0 0 20px rgba(99, 102, 241, 0.8); }
+        }
+        
+        .counter {
+            font-variant-numeric: tabular-nums;
+        }
     </style>
 </head>
 <body class="min-h-screen p-4 md:p-8">
     <div class="container mx-auto">
         <!-- Header -->
-        <header class="mb-8">
+        <header class="mb-6">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
                 <div>
                     <h1 class="text-3xl md:text-4xl font-bold mb-2 slide-in">CDH Productivity Dashboard</h1>
@@ -183,6 +197,24 @@
                 </div>
             </div>
         </header>
+        
+        <!-- Key Metrics Highlight -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 fade-in">
+            <div class="highlight-card p-5 rounded-xl flex items-center justify-between">
+                <div>
+                    <h3 class="text-sm font-medium text-indigo-200">TEAM AVERAGE PRODUCTIVITY</h3>
+                    <p class="text-3xl font-bold counter" id="team-avg-productivity">0.00</p>
+                </div>
+                <div class="text-4xl">📈</div>
+            </div>
+            <div class="highlight-card p-5 rounded-xl flex items-center justify-between">
+                <div>
+                    <h3 class="text-sm font-medium text-indigo-200">TOTAL MANHOURS</h3>
+                    <p class="text-3xl font-bold counter" id="team-total-manhours">0.00</p>
+                </div>
+                <div class="text-4xl">⏱️</div>
+            </div>
+        </div>
         
         <div class="refresh-indicator">
             <div class="pulse-dot"></div>
@@ -222,8 +254,8 @@
                     <p class="text-2xl font-bold" id="total-equivalent">0</p>
                 </div>
                 <div class="card p-5">
-                    <h3 class="text-gray-300 text-sm mb-1">Average Productivity</h3>
-                    <p class="text-2xl font-bold" id="avg-productivity">0</p>
+                    <h3 class="text-gray-300 text-sm mb-1">Target Achievement</h3>
+                    <p class="text-2xl font-bold" id="target-achievement">0%</p>
                 </div>
             </div>
         </div>
@@ -337,6 +369,7 @@
         // Update the entire dashboard
         function updateDashboard() {
             updateSummaryStats();
+            updateKeyMetrics();
             renderProductivityCards();
             updateCharts();
             generateAIInsights();
@@ -353,22 +386,60 @@
             }, 10000);
         }
         
-        // Update summary statistics
-        function updateSummaryStats() {
-            const totalErection = productivityData.reduce((sum, item) => sum + item.erection, 0);
-            const totalDismantling = productivityData.reduce((sum, item) => sum + item.dismantling, 0);
-            const totalEquivalent = productivityData.reduce((sum, item) => sum + item.equivalent, 0);
-            
-            // Calculate average productivity (excluding zero/invalid values)
+        // Update key metrics at the top
+        function updateKeyMetrics() {
+            // Calculate team average productivity (excluding zero/invalid values)
             const validProductivity = productivityData.filter(item => item.productivity > 0);
             const avgProductivity = validProductivity.length > 0 
                 ? validProductivity.reduce((sum, item) => sum + item.productivity, 0) / validProductivity.length
                 : 0;
             
+            // Calculate total manhours
+            const totalManhours = productivityData.reduce((sum, item) => sum + item.totalManhours, 0);
+            
+            // Animate the counters
+            animateCounter('team-avg-productivity', avgProductivity, 2);
+            animateCounter('team-total-manhours', totalManhours, 2);
+        }
+        
+        // Animate counter from 0 to target value
+        function animateCounter(elementId, targetValue, decimals = 0) {
+            const element = document.getElementById(elementId);
+            const startValue = 0;
+            const duration = 1500; // ms
+            const startTime = performance.now();
+            
+            function updateCounter(currentTime) {
+                const elapsedTime = currentTime - startTime;
+                const progress = Math.min(elapsedTime / duration, 1);
+                
+                const currentValue = startValue + progress * (targetValue - startValue);
+                element.textContent = currentValue.toFixed(decimals);
+                
+                if (progress < 1) {
+                    requestAnimationFrame(updateCounter);
+                } else {
+                    element.textContent = targetValue.toFixed(decimals);
+                }
+            }
+            
+            requestAnimationFrame(updateCounter);
+        }
+        
+        // Update summary statistics
+        function updateSummaryStats() {
+            const totalErection = productivityData.reduce((sum, item) => sum + item.erection, 0);
+            const totalDismantling = productivityData.reduce((sum, item) => sum + item.dismantling, 0);
+            const totalEquivalent = productivityData.reduce((sum, item) => sum + item.equivalent, 0);
+            const totalTarget = productivityData.reduce((sum, item) => sum + item.target, 0);
+            
+            // Calculate target achievement percentage
+            const targetAchievement = totalTarget > 0 ? (totalEquivalent / totalTarget) * 100 : 0;
+            
             document.getElementById('total-erection').textContent = totalErection.toFixed(2);
             document.getElementById('total-dismantling').textContent = totalDismantling.toFixed(2);
             document.getElementById('total-equivalent').textContent = totalEquivalent.toFixed(2);
-            document.getElementById('avg-productivity').textContent = avgProductivity.toFixed(2);
+            document.getElementById('target-achievement').textContent = `${targetAchievement.toFixed(1)}%`;
         }
         
         // Render productivity cards
@@ -710,5 +781,5 @@
             });
         }
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'966bd8ce630e7eea',t:'MTc1Mzc4NDA0MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'966be51f9785852b',t:'MTc1Mzc4NDU0NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
