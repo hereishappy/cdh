@@ -1,1 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CDH Productivity Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.0/papaparse.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/luxon@2.0.2/build/global/luxon.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #1a1f38 0%, #2d3a5d 100%);
+            color: #fff;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            transition: all 0.5s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+        
+        .top-performer {
+            background: linear-gradient(135deg, #4b6cb7 0%, #182848 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .star {
+            position: absolute;
+            background: #fff;
+            border-radius: 50%;
+            animation: twinkle 1.5s infinite alternate;
+        }
+        
+        @keyframes twinkle {
+            0% { opacity: 0.2; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1.2); }
+        }
+        
+        .congratulation-banner {
+            background: linear-gradient(135deg, #ff9966 0%, #ff5e62 100%);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+            100% { transform: scale(1); }
+        }
+        
+        .progress-bar {
+            height: 10px;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.2);
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            border-radius: 5px;
+            transition: width 1s ease-in-out;
+        }
+        
+        .progress-fill.good {
+            background: linear-gradient(90deg, #00b09b, #96c93d);
+        }
+        
+        .progress-fill.average {
+            background: linear-gradient(90deg, #f7b733, #fc4a1a);
+        }
+        
+        .progress-fill.poor {
+            background: linear-gradient(90deg, #ff512f, #dd2476);
+        }
+        
+        .fade-in {
+            animation: fadeIn 1s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .slide-in {
+            animation: slideIn 0.8s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(-50px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .rotate-in {
+            animation: rotateIn 1s ease-out;
+        }
+        
+        @keyframes rotateIn {
+            from { transform: rotate(-10deg) scale(0.9); opacity: 0; }
+            to { transform: rotate(0) scale(1); opacity: 1; }
+        }
+        
+        .dashboard-section {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s ease;
+        }
+        
+        .dashboard-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .refresh-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .pulse-dot {
+            width: 10px;
+            height: 10px;
+            background-color: #4ade80;
+            border-radius: 50%;
+            animation: pulse-animation 2s infinite;
+        }
+        
+        @keyframes pulse-animation {
+            0% { transform: scale(0.8); box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(74, 222, 128, 0); }
+            100% { transform: scale(0.8); }
+        }
+        
+        .ai-suggestion {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-left: 4px solid #a78bfa;
+        }
+        
+        .ai-icon {
+            font-size: 1.5rem;
+            background: linear-gradient(135deg, #b721ff 0%, #21d4fd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="min-h-screen p-4 md:p-8">
+    <div class="container mx-auto">
+        <!-- Header -->
+        <header class="mb-8">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
+                <div>
+                    <h1 class="text-3xl md:text-4xl font-bold mb-2 slide-in">CDH Productivity Dashboard</h1>
+                    <p class="text-gray-300 mb-2 slide-in" id="current-date">Loading date...</p>
+                    <p class="text-sm text-gray-400 slide-in">Sheet: PRODUCTIVITY</p>
+                </div>
+                <div class="mt-4 md:mt-0 rotate-in">
+                    <div class="bg-indigo-600 px-4 py-2 rounded-lg shadow-lg flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                        <span>LIVE UPDATES</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+        <div class="refresh-indicator">
+            <div class="pulse-dot"></div>
+            <span>Auto-refreshing</span>
+        </div>
+        
+        <!-- Top Performer Banner -->
+        <div id="top-performer-banner" class="congratulation-banner p-4 rounded-xl mb-8 hidden">
+            <div class="flex flex-col md:flex-row items-center justify-between">
+                <div class="flex items-center mb-4 md:mb-0">
+                    <div class="text-4xl mr-4">🏆</div>
+                    <div>
+                        <h3 class="text-xl font-bold">Congratulations!</h3>
+                        <p id="top-performer-name" class="text-white text-opacity-90"></p>
+                    </div>
+                </div>
+                <div>
+                    <span class="bg-white bg-opacity-30 px-4 py-2 rounded-full font-semibold">Top Performer</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Summary Stats -->
+        <div class="dashboard-section mb-8">
+            <h2 class="text-xl font-semibold mb-4">Overall Performance</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="card p-5">
+                    <h3 class="text-gray-300 text-sm mb-1">Total Erection</h3>
+                    <p class="text-2xl font-bold" id="total-erection">0</p>
+                </div>
+                <div class="card p-5">
+                    <h3 class="text-gray-300 text-sm mb-1">Total Dismantling</h3>
+                    <p class="text-2xl font-bold" id="total-dismantling">0</p>
+                </div>
+                <div class="card p-5">
+                    <h3 class="text-gray-300 text-sm mb-1">Total Equivalent</h3>
+                    <p class="text-2xl font-bold" id="total-equivalent">0</p>
+                </div>
+                <div class="card p-5">
+                    <h3 class="text-gray-300 text-sm mb-1">Average Productivity</h3>
+                    <p class="text-2xl font-bold" id="avg-productivity">0</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Charts -->
+        <div class="dashboard-section mb-8">
+            <h2 class="text-xl font-semibold mb-4">Performance Analytics</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="card p-5">
+                    <h3 class="text-lg font-medium mb-4">Productivity by Supervisor</h3>
+                    <div class="h-64">
+                        <canvas id="productivity-chart"></canvas>
+                    </div>
+                </div>
+                <div class="card p-5">
+                    <h3 class="text-lg font-medium mb-4">Target vs Actual</h3>
+                    <div class="h-64">
+                        <canvas id="target-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- AI Insights -->
+        <div class="dashboard-section mb-8">
+            <h2 class="text-xl font-semibold mb-4">AI Insights</h2>
+            <div class="card ai-suggestion p-5">
+                <div class="flex items-start">
+                    <div class="mr-4">
+                        <div class="ai-icon">🤖</div>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-medium mb-2">Performance Analysis</h3>
+                        <div id="ai-insights" class="text-gray-200">
+                            Analyzing productivity data...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Productivity Cards -->
+        <div class="dashboard-section mb-8">
+            <h2 class="text-xl font-semibold mb-4">Supervisor Productivity</h2>
+            <div id="productivity-cards" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Cards will be dynamically generated here -->
+            </div>
+        </div>
+    </div>
 
+    <script>
+        // Global variables
+        let productivityData = [];
+        let currentCardIndex = 0;
+        let transitionInterval;
+        let refreshInterval;
+        let chartInstances = {};
+        
+        // CSV URL
+        const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR770AQ-HHixlcLynNRlnX01iKGuoWbQjYKL4HuVkL6dkiQlneLSmavh0ol0qfNln4UTN20ZXIQ8yuY/pub?gid=67021281&single=true&output=csv';
+        
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', () => {
+            updateCurrentDate();
+            loadData();
+            
+            // Set up auto refresh every 5 minutes
+            refreshInterval = setInterval(() => {
+                loadData();
+            }, 5 * 60 * 1000); // 5 minutes
+            
+            // Animate sections on load
+            animateSections();
+        });
+        
+        // Update current date
+        function updateCurrentDate() {
+            const now = luxon.DateTime.now();
+            document.getElementById('current-date').textContent = now.toFormat('EEEE, MMMM d, yyyy - hh:mm a');
+        }
+        
+        // Load data from CSV
+        function loadData() {
+            updateCurrentDate();
+            
+            Papa.parse(csvUrl, {
+                download: true,
+                header: true,
+                skipEmptyLines: true,
+                complete: function(results) {
+                    productivityData = results.data.map(row => {
+                        return {
+                            supName: row['SUP NAME'],
+                            erection: parseFloat(row['ERECTION']) || 0,
+                            dismantling: parseFloat(row['DISMANTLING']) || 0,
+                            equivalent: parseFloat(row['EQUILVENT']) || 0,
+                            totalManhours: parseFloat(row['TOTAL MANHOURS']) || 0,
+                            productivity: row['PRODUCTIVITY'] === '#DIV/0!' ? 0 : parseFloat(row['PRODUCTIVITY']) || 0,
+                            target: (parseFloat(row['TOTAL MANHOURS']) || 0) * 3.3
+                        };
+                    });
+                    
+                    updateDashboard();
+                },
+                error: function(error) {
+                    console.error('Error loading CSV data:', error);
+                }
+            });
+        }
+        
+        // Update the entire dashboard
+        function updateDashboard() {
+            updateSummaryStats();
+            renderProductivityCards();
+            updateCharts();
+            generateAIInsights();
+            highlightTopPerformer();
+            
+            // Clear previous transition interval if exists
+            if (transitionInterval) {
+                clearInterval(transitionInterval);
+            }
+            
+            // Set up card transitions every 10 seconds
+            transitionInterval = setInterval(() => {
+                transitionCards();
+            }, 10000);
+        }
+        
+        // Update summary statistics
+        function updateSummaryStats() {
+            const totalErection = productivityData.reduce((sum, item) => sum + item.erection, 0);
+            const totalDismantling = productivityData.reduce((sum, item) => sum + item.dismantling, 0);
+            const totalEquivalent = productivityData.reduce((sum, item) => sum + item.equivalent, 0);
+            
+            // Calculate average productivity (excluding zero/invalid values)
+            const validProductivity = productivityData.filter(item => item.productivity > 0);
+            const avgProductivity = validProductivity.length > 0 
+                ? validProductivity.reduce((sum, item) => sum + item.productivity, 0) / validProductivity.length
+                : 0;
+            
+            document.getElementById('total-erection').textContent = totalErection.toFixed(2);
+            document.getElementById('total-dismantling').textContent = totalDismantling.toFixed(2);
+            document.getElementById('total-equivalent').textContent = totalEquivalent.toFixed(2);
+            document.getElementById('avg-productivity').textContent = avgProductivity.toFixed(2);
+        }
+        
+        // Render productivity cards
+        function renderProductivityCards() {
+            const cardsContainer = document.getElementById('productivity-cards');
+            cardsContainer.innerHTML = '';
+            
+            productivityData.forEach((item, index) => {
+                if (item.supName.trim() === '') return;
+                
+                const productivityPercentage = item.totalManhours > 0 
+                    ? (item.equivalent / item.target) * 100 
+                    : 0;
+                
+                const statusClass = productivityPercentage >= 90 ? 'good' : 
+                                   productivityPercentage >= 70 ? 'average' : 'poor';
+                
+                const isTopPerformer = item.productivity > 0 && 
+                    item.productivity === Math.max(...productivityData.map(d => d.productivity > 0 ? d.productivity : 0));
+                
+                const card = document.createElement('div');
+                card.className = `card p-5 ${isTopPerformer ? 'top-performer' : ''} ${index === currentCardIndex ? 'fade-in' : ''}`;
+                card.setAttribute('data-index', index);
+                
+                // Add stars for top performer
+                if (isTopPerformer && item.productivity > 0) {
+                    for (let i = 0; i < 5; i++) {
+                        const star = document.createElement('div');
+                        star.className = 'star';
+                        star.style.width = `${Math.random() * 4 + 2}px`;
+                        star.style.height = star.style.width;
+                        star.style.top = `${Math.random() * 100}%`;
+                        star.style.left = `${Math.random() * 100}%`;
+                        star.style.animationDelay = `${Math.random() * 2}s`;
+                        card.appendChild(star);
+                    }
+                }
+                
+                let productivityDisplay = item.productivity;
+                if (item.productivity === 0 && item.totalManhours === 0) {
+                    productivityDisplay = 'N/A';
+                } else {
+                    productivityDisplay = item.productivity.toFixed(2);
+                }
+                
+                card.innerHTML += `
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-lg font-semibold">${item.supName}</h3>
+                        <div class="bg-white bg-opacity-20 px-3 py-1 rounded-full text-sm">
+                            Productivity: ${productivityDisplay}
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <p class="text-xs text-gray-300">Erection</p>
+                            <p class="text-lg font-medium">${item.erection.toFixed(2)}</p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-300">Dismantling</p>
+                            <p class="text-lg font-medium">${item.dismantling.toFixed(2)}</p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-300">Equivalent</p>
+                            <p class="text-lg font-medium">${item.equivalent.toFixed(2)}</p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-300">Manhours</p>
+                            <p class="text-lg font-medium">${item.totalManhours.toFixed(2)}</p>
+                        </div>
+                    </div>
+                    <div class="mb-1 flex justify-between text-xs">
+                        <span>Target: ${item.target.toFixed(2)}</span>
+                        <span>${productivityPercentage.toFixed(0)}%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill ${statusClass}" style="width: ${Math.min(100, productivityPercentage)}%"></div>
+                    </div>
+                `;
+                
+                cardsContainer.appendChild(card);
+            });
+        }
+        
+        // Transition between cards with animation
+        function transitionCards() {
+            const cards = document.querySelectorAll('#productivity-cards .card');
+            if (cards.length === 0) return;
+            
+            // Remove animation class from all cards
+            cards.forEach(card => {
+                card.classList.remove('fade-in');
+            });
+            
+            // Increment current card index
+            currentCardIndex = (currentCardIndex + 1) % cards.length;
+            
+            // Add animation class to current card
+            const currentCard = document.querySelector(`#productivity-cards .card[data-index="${currentCardIndex}"]`);
+            if (currentCard) {
+                currentCard.classList.add('fade-in');
+                
+                // Scroll to the card if needed
+                currentCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        }
+        
+        // Update charts
+        function updateCharts() {
+            updateProductivityChart();
+            updateTargetChart();
+        }
+        
+        // Update productivity chart
+        function updateProductivityChart() {
+            const ctx = document.getElementById('productivity-chart').getContext('2d');
+            
+            // Filter out supervisors with no productivity
+            const filteredData = productivityData.filter(item => 
+                item.supName.trim() !== '' && 
+                !(item.productivity === 0 && item.totalManhours === 0)
+            );
+            
+            // Destroy previous chart instance if exists
+            if (chartInstances.productivity) {
+                chartInstances.productivity.destroy();
+            }
+            
+            chartInstances.productivity = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: filteredData.map(item => item.supName),
+                    datasets: [{
+                        label: 'Productivity',
+                        data: filteredData.map(item => item.productivity),
+                        backgroundColor: 'rgba(129, 140, 248, 0.7)',
+                        borderColor: 'rgba(129, 140, 248, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: 'rgba(255, 255, 255, 0.7)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: 'rgba(255, 255, 255, 0.7)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: 'rgba(255, 255, 255, 0.7)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Update target vs actual chart
+        function updateTargetChart() {
+            const ctx = document.getElementById('target-chart').getContext('2d');
+            
+            // Filter out supervisors with no data
+            const filteredData = productivityData.filter(item => 
+                item.supName.trim() !== '' && 
+                item.totalManhours > 0
+            );
+            
+            // Destroy previous chart instance if exists
+            if (chartInstances.target) {
+                chartInstances.target.destroy();
+            }
+            
+            chartInstances.target = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: filteredData.map(item => item.supName),
+                    datasets: [
+                        {
+                            label: 'Target',
+                            data: filteredData.map(item => item.target),
+                            backgroundColor: 'rgba(167, 139, 250, 0.5)',
+                            borderColor: 'rgba(167, 139, 250, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Actual Equivalent',
+                            data: filteredData.map(item => item.equivalent),
+                            backgroundColor: 'rgba(79, 209, 197, 0.7)',
+                            borderColor: 'rgba(79, 209, 197, 1)',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: 'rgba(255, 255, 255, 0.7)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: 'rgba(255, 255, 255, 0.7)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: 'rgba(255, 255, 255, 0.7)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Generate AI insights
+        function generateAIInsights() {
+            const insightsElement = document.getElementById('ai-insights');
+            
+            // Filter valid data
+            const validData = productivityData.filter(item => 
+                item.supName.trim() !== '' && 
+                item.totalManhours > 0
+            );
+            
+            if (validData.length === 0) {
+                insightsElement.innerHTML = 'Insufficient data to generate insights. Please ensure supervisors have recorded manhours.';
+                return;
+            }
+            
+            // Calculate insights
+            const topPerformer = validData.reduce((prev, current) => 
+                (prev.productivity > current.productivity) ? prev : current
+            );
+            
+            const avgProductivity = validData.reduce((sum, item) => sum + item.productivity, 0) / validData.length;
+            
+            const belowTarget = validData.filter(item => item.equivalent < item.target);
+            
+            // Generate insights text
+            let insights = `<ul class="list-disc pl-5 space-y-2">`;
+            
+            if (topPerformer.productivity > 0) {
+                insights += `<li><span class="font-medium">${topPerformer.supName}</span> is the top performer with a productivity of ${topPerformer.productivity.toFixed(2)}.</li>`;
+            }
+            
+            insights += `<li>Team average productivity is ${avgProductivity.toFixed(2)}.</li>`;
+            
+            if (belowTarget.length > 0) {
+                insights += `<li>${belowTarget.length} supervisor(s) are currently below their target equivalent.</li>`;
+            }
+            
+            // Add recommendations
+            insights += `<li class="font-medium mt-2">Recommendations:</li>`;
+            
+            if (avgProductivity < 2.0) {
+                insights += `<li>Overall productivity is below optimal levels. Consider reviewing work processes and resource allocation.</li>`;
+            }
+            
+            if (belowTarget.length > 0) {
+                insights += `<li>Focus on supporting supervisors with lower productivity to help them reach their targets.</li>`;
+            }
+            
+            insights += `</ul>`;
+            
+            insightsElement.innerHTML = insights;
+        }
+        
+        // Highlight top performer
+        function highlightTopPerformer() {
+            const banner = document.getElementById('top-performer-banner');
+            const nameElement = document.getElementById('top-performer-name');
+            
+            // Filter valid data
+            const validData = productivityData.filter(item => 
+                item.supName.trim() !== '' && 
+                item.productivity > 0 &&
+                item.totalManhours > 0
+            );
+            
+            if (validData.length === 0) {
+                banner.classList.add('hidden');
+                return;
+            }
+            
+            const topPerformer = validData.reduce((prev, current) => 
+                (prev.productivity > current.productivity) ? prev : current
+            );
+            
+            if (topPerformer.productivity > 0) {
+                nameElement.textContent = `${topPerformer.supName} is leading with ${topPerformer.productivity.toFixed(2)} productivity!`;
+                banner.classList.remove('hidden');
+            } else {
+                banner.classList.add('hidden');
+            }
+        }
+        
+        // Animate dashboard sections
+        function animateSections() {
+            const sections = document.querySelectorAll('.dashboard-section');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+        }
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'966bd8ce630e7eea',t:'MTc1Mzc4NDA0MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
