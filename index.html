@@ -175,9 +175,150 @@
         .counter {
             font-variant-numeric: tabular-nums;
         }
+        
+        /* Security PIN Overlay Styles */
+        .security-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a1f38 0%, #2d3a5d 100%);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        
+        .security-overlay.hidden {
+            opacity: 0;
+            transform: translateY(-100%);
+            pointer-events: none;
+        }
+        
+        .pin-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            padding: 2rem;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+        
+        .pin-dots {
+            display: flex;
+            justify-content: center;
+            margin: 1.5rem 0;
+            gap: 0.75rem;
+        }
+        
+        .pin-dot {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .pin-dot.filled {
+            background: #6366f1;
+            transform: scale(1.1);
+        }
+        
+        .pin-keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+        }
+        
+        .pin-key {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 1rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .pin-key:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .pin-key:active {
+            transform: translateY(1px);
+        }
+        
+        .pin-key.special {
+            font-size: 1rem;
+        }
+        
+        .shake {
+            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+        }
+        
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
+        
+        .error-message {
+            color: #f87171;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            height: 20px;
+            transition: opacity 0.3s ease;
+        }
     </style>
 </head>
 <body class="min-h-screen p-4 md:p-8">
+    <!-- Security PIN Overlay -->
+    <div class="security-overlay" id="security-overlay">
+        <div class="pin-container" id="pin-container">
+            <div class="flex items-center justify-center mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-indigo-400 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+                <h2 class="text-2xl font-bold">Security Access</h2>
+            </div>
+            <p class="text-gray-300">Enter PIN to access the dashboard</p>
+            
+            <div class="pin-dots" id="pin-dots">
+                <div class="pin-dot"></div>
+                <div class="pin-dot"></div>
+                <div class="pin-dot"></div>
+                <div class="pin-dot"></div>
+                <div class="pin-dot"></div>
+                <div class="pin-dot"></div>
+            </div>
+            
+            <div class="error-message" id="error-message"></div>
+            
+            <div class="pin-keypad">
+                <div class="pin-key" data-key="1">1</div>
+                <div class="pin-key" data-key="2">2</div>
+                <div class="pin-key" data-key="3">3</div>
+                <div class="pin-key" data-key="4">4</div>
+                <div class="pin-key" data-key="5">5</div>
+                <div class="pin-key" data-key="6">6</div>
+                <div class="pin-key" data-key="7">7</div>
+                <div class="pin-key" data-key="8">8</div>
+                <div class="pin-key" data-key="9">9</div>
+                <div class="pin-key special" data-key="clear">Clear</div>
+                <div class="pin-key" data-key="0">0</div>
+                <div class="pin-key special" data-key="enter">Enter</div>
+            </div>
+        </div>
+    </div>
+
     <div class="container mx-auto">
         <!-- Header -->
         <header class="mb-6">
@@ -314,22 +455,127 @@
         let refreshInterval;
         let chartInstances = {};
         
+        // Security PIN
+        const CORRECT_PIN = "119034";
+        let currentPin = "";
+        
         // CSV URL
         const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR770AQ-HHixlcLynNRlnX01iKGuoWbQjYKL4HuVkL6dkiQlneLSmavh0ol0qfNln4UTN20ZXIQ8yuY/pub?gid=67021281&single=true&output=csv';
         
         // Initialize dashboard
         document.addEventListener('DOMContentLoaded', () => {
             updateCurrentDate();
-            loadData();
+            setupPinSecurity();
             
-            // Set up auto refresh every 5 minutes
-            refreshInterval = setInterval(() => {
-                loadData();
-            }, 5 * 60 * 1000); // 5 minutes
-            
-            // Animate sections on load
-            animateSections();
+            // Only load data after successful PIN entry
+            // loadData() will be called after PIN verification
         });
+        
+        // Setup PIN security
+        function setupPinSecurity() {
+            const pinKeys = document.querySelectorAll('.pin-key');
+            const pinDots = document.querySelectorAll('.pin-dot');
+            const errorMessage = document.getElementById('error-message');
+            const pinContainer = document.getElementById('pin-container');
+            
+            pinKeys.forEach(key => {
+                key.addEventListener('click', () => {
+                    const keyValue = key.getAttribute('data-key');
+                    
+                    if (keyValue === 'clear') {
+                        // Clear PIN
+                        currentPin = "";
+                        updatePinDots();
+                        errorMessage.textContent = "";
+                    } else if (keyValue === 'enter') {
+                        // Verify PIN
+                        if (currentPin === CORRECT_PIN) {
+                            // Correct PIN
+                            errorMessage.textContent = "";
+                            document.getElementById('security-overlay').classList.add('hidden');
+                            
+                            // Initialize dashboard after successful login
+                            loadData();
+                            
+                            // Set up auto refresh every 5 minutes
+                            refreshInterval = setInterval(() => {
+                                loadData();
+                            }, 5 * 60 * 1000); // 5 minutes
+                            
+                            // Animate sections on load
+                            animateSections();
+                        } else {
+                            // Incorrect PIN
+                            errorMessage.textContent = "Incorrect PIN. Please try again.";
+                            pinContainer.classList.add('shake');
+                            
+                            // Remove shake class after animation completes
+                            setTimeout(() => {
+                                pinContainer.classList.remove('shake');
+                            }, 500);
+                            
+                            // Clear PIN
+                            currentPin = "";
+                            updatePinDots();
+                        }
+                    } else if (currentPin.length < 6) {
+                        // Add digit to PIN
+                        currentPin += keyValue;
+                        updatePinDots();
+                        
+                        // Auto-submit if PIN is complete
+                        if (currentPin.length === 6) {
+                            setTimeout(() => {
+                                document.querySelector('.pin-key[data-key="enter"]').click();
+                            }, 300);
+                        }
+                    }
+                });
+            });
+            
+            // Update PIN dots display
+            function updatePinDots() {
+                pinDots.forEach((dot, index) => {
+                    if (index < currentPin.length) {
+                        dot.classList.add('filled');
+                    } else {
+                        dot.classList.remove('filled');
+                    }
+                });
+            }
+            
+            // Add keyboard support for PIN entry
+            document.addEventListener('keydown', (e) => {
+                // Only process keyboard input if PIN overlay is visible
+                if (document.getElementById('security-overlay').classList.contains('hidden')) {
+                    return;
+                }
+                
+                if (e.key >= '0' && e.key <= '9' && currentPin.length < 6) {
+                    // Number keys
+                    currentPin += e.key;
+                    updatePinDots();
+                    
+                    // Auto-submit if PIN is complete
+                    if (currentPin.length === 6) {
+                        setTimeout(() => {
+                            document.querySelector('.pin-key[data-key="enter"]').click();
+                        }, 300);
+                    }
+                } else if (e.key === 'Enter') {
+                    // Enter key
+                    document.querySelector('.pin-key[data-key="enter"]').click();
+                } else if (e.key === 'Backspace' || e.key === 'Delete') {
+                    // Backspace/Delete key
+                    currentPin = currentPin.slice(0, -1);
+                    updatePinDots();
+                    errorMessage.textContent = "";
+                } else if (e.key === 'Escape') {
+                    // Escape key
+                    document.querySelector('.pin-key[data-key="clear"]').click();
+                }
+            });
+        }
         
         // Update current date
         function updateCurrentDate() {
@@ -781,5 +1027,5 @@
             });
         }
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'966be51f9785852b',t:'MTc1Mzc4NDU0NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'966c14be50df8826',t:'MTc1Mzc4NjQ5Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
