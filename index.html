@@ -30,6 +30,29 @@
             50% { opacity: 0.7; }
         }
         
+        /* Hide Looker Studio privacy text */
+        iframe {
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Create overlay to hide privacy text */
+        .iframe-container {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .iframe-container::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 200px;
+            height: 30px;
+            background: white;
+            z-index: 2;
+            pointer-events: none;
+        }
 
     </style>
 </head>
@@ -50,54 +73,54 @@
         </div>
         
         <!-- Main Header -->
-        <div class="container mx-auto px-4 py-3 relative z-10">
-            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-3 lg:space-y-0">
-                <!-- Left: Scaffolding Safety Title -->
-                <div class="flex-1">
-                    <div class="flex items-center space-x-2 mb-2">
-                        <div class="bg-gradient-to-r from-red-500 to-orange-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
+        <div class="container mx-auto px-2 sm:px-4 py-3 relative z-10">
+            <div class="flex flex-col space-y-3">
+                <!-- Top: Scaffolding Safety Title -->
+                <div class="text-center sm:text-left">
+                    <div class="flex flex-wrap justify-center sm:justify-start items-center gap-2 mb-2">
+                        <div class="bg-gradient-to-r from-red-500 to-orange-500 text-white px-2 sm:px-3 py-1 rounded-full text-xs font-bold shadow-lg">
                             🚨 SAFETY
                         </div>
-                        <div class="bg-gradient-to-r from-yellow-500 to-orange-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg animate-pulse">
+                        <div class="bg-gradient-to-r from-yellow-500 to-orange-500 text-white px-2 sm:px-3 py-1 rounded-full text-xs font-bold shadow-lg animate-pulse">
                             🏗️ SCAFFOLDING
                         </div>
                     </div>
-                    <h1 class="text-2xl lg:text-3xl font-bold text-white flex items-center mb-1">
+                    <h1 class="text-xl sm:text-2xl lg:text-3xl font-bold text-white flex flex-wrap justify-center sm:justify-start items-center mb-1">
                         <span class="bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
                             🏗️ Site Reporting
                         </span>
-                        <span class="ml-3 text-yellow-400 animate-pulse">⚡</span>
+                        <span class="ml-2 sm:ml-3 text-yellow-400 animate-pulse">⚡</span>
                     </h1>
-                    <p class="text-slate-300 text-sm flex items-center">
+                    <p class="text-slate-300 text-xs sm:text-sm flex flex-wrap justify-center sm:justify-start items-center">
                         <span class="mr-2 text-yellow-400">🛡️</span>
-                        Real-time scaffolding safety monitoring & compliance
+                        <span class="text-center sm:text-left">Real-time scaffolding safety monitoring & compliance</span>
                     </p>
                 </div>
                 
-                <!-- Right: Compact Status Indicators -->
-                <div class="flex flex-wrap items-center gap-2 text-xs">
+                <!-- Bottom: Status Indicators -->
+                <div class="flex flex-wrap justify-center sm:justify-start items-center gap-1 sm:gap-2 text-xs">
                     <!-- Safety Status -->
-                    <div class="flex items-center space-x-2 bg-gradient-to-r from-green-600 to-emerald-600 px-3 py-1 rounded-full shadow-lg">
+                    <div class="flex items-center space-x-1 sm:space-x-2 bg-gradient-to-r from-green-600 to-emerald-600 px-2 sm:px-3 py-1 rounded-full shadow-lg">
                         <span class="w-2 h-2 bg-green-300 rounded-full animate-pulse"></span>
-                        <span class="font-semibold text-white">✅ SAFE</span>
+                        <span class="font-semibold text-white text-xs">✅ SAFE</span>
                     </div>
                     
                     <!-- Location -->
-                    <div class="flex items-center space-x-2 bg-white/10 backdrop-blur-sm px-3 py-1 rounded-full border border-white/20">
+                    <div class="flex items-center space-x-1 sm:space-x-2 bg-white/10 backdrop-blur-sm px-2 sm:px-3 py-1 rounded-full border border-white/20">
                         <span class="text-blue-400">📍</span>
-                        <span id="location" class="font-medium text-white">Loading...</span>
+                        <span id="location" class="font-medium text-white text-xs truncate max-w-20 sm:max-w-none">Loading...</span>
                     </div>
                     
                     <!-- Weather -->
-                    <div class="flex items-center space-x-2 bg-white/10 backdrop-blur-sm px-3 py-1 rounded-full border border-white/20">
+                    <div class="flex items-center space-x-1 sm:space-x-2 bg-white/10 backdrop-blur-sm px-2 sm:px-3 py-1 rounded-full border border-white/20">
                         <span id="weather-icon" class="weather-icon">🌤️</span>
-                        <span id="weather" class="font-medium text-white">Loading...</span>
+                        <span id="weather" class="font-medium text-white text-xs">Loading...</span>
                     </div>
                     
                     <!-- Time -->
-                    <div class="flex items-center space-x-2 bg-white/10 backdrop-blur-sm px-3 py-1 rounded-full border border-white/20">
+                    <div class="flex items-center space-x-1 sm:space-x-2 bg-white/10 backdrop-blur-sm px-2 sm:px-3 py-1 rounded-full border border-white/20">
                         <span class="text-cyan-400">🕐</span>
-                        <span id="current-time" class="font-medium font-mono text-white"></span>
+                        <span id="current-time" class="font-medium font-mono text-white text-xs"></span>
                     </div>
                 </div>
             </div>
@@ -111,13 +134,13 @@
 
     <!-- Main Content -->
     <main class="flex-1 bg-white">
-        <div class="w-full">
+        <div class="w-full iframe-container">
             <iframe 
-                width="600" 
+                class="w-full" 
                 height="1068" 
                 src="https://lookerstudio.google.com/embed/reporting/269739d7-52c4-4c55-9f98-65fa02547f85/page/p_v8ez92uavd" 
                 frameborder="0" 
-                style="border:0" 
+                style="border:0; min-height: 600px;" 
                 allowfullscreen 
                 sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox">
             </iframe>
@@ -139,9 +162,9 @@
             </div>
         </div>
         
-        <div class="container mx-auto px-4 py-2 relative z-10">
+        <div class="container mx-auto px-2 sm:px-4 py-2 relative z-10">
             <!-- Scaffolding Safety Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 mb-2">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 mb-2">
                 <!-- Scaffolding Inspection Alert -->
                 <div class="bg-gradient-to-br from-red-600 to-red-800 border-l-2 border-yellow-400 p-2 rounded-lg shadow-lg relative overflow-hidden">
                     <div class="absolute top-0 right-0 w-8 h-8 bg-yellow-400 opacity-20 rounded-full -mr-4 -mt-4"></div>
@@ -220,27 +243,28 @@
             
             <!-- Scaffolding Safety Status Bar -->
             <div class="border-t border-yellow-600 pt-2">
-                <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-2 lg:space-y-0">
-                    <div class="flex flex-wrap items-center gap-2 text-xs">
-                        <span class="flex items-center bg-gradient-to-r from-green-600 to-emerald-600 px-3 py-1 rounded-full shadow-lg">
-                            <span class="w-2 h-2 bg-green-300 rounded-full mr-2 animate-pulse"></span>
-                            🏗️ Scaffolding: Safe
+                <div class="flex flex-col space-y-2">
+                    <div class="flex flex-wrap justify-center sm:justify-start items-center gap-1 sm:gap-2 text-xs">
+                        <span class="flex items-center bg-gradient-to-r from-green-600 to-emerald-600 px-2 sm:px-3 py-1 rounded-full shadow-lg">
+                            <span class="w-2 h-2 bg-green-300 rounded-full mr-1 sm:mr-2 animate-pulse"></span>
+                            <span class="text-xs">🏗️ Safe</span>
                         </span>
-                        <span class="flex items-center bg-gradient-to-r from-blue-600 to-indigo-600 px-3 py-1 rounded-full shadow-lg">
-                            <span class="w-2 h-2 bg-blue-300 rounded-full mr-2 animate-pulse"></span>
-                            ⚡ Systems: Online
+                        <span class="flex items-center bg-gradient-to-r from-blue-600 to-indigo-600 px-2 sm:px-3 py-1 rounded-full shadow-lg">
+                            <span class="w-2 h-2 bg-blue-300 rounded-full mr-1 sm:mr-2 animate-pulse"></span>
+                            <span class="text-xs">⚡ Online</span>
                         </span>
-                        <span class="flex items-center bg-gradient-to-r from-yellow-600 to-orange-600 px-3 py-1 rounded-full shadow-lg">
-                            <span class="w-2 h-2 bg-yellow-300 rounded-full mr-2 animate-pulse"></span>
-                            🛡️ Safety: Compliant
+                        <span class="flex items-center bg-gradient-to-r from-yellow-600 to-orange-600 px-2 sm:px-3 py-1 rounded-full shadow-lg">
+                            <span class="w-2 h-2 bg-yellow-300 rounded-full mr-1 sm:mr-2 animate-pulse"></span>
+                            <span class="text-xs">🛡️ Compliant</span>
                         </span>
-                        <span class="flex items-center bg-gradient-to-r from-red-600 to-pink-600 px-3 py-1 rounded-full shadow-lg">
-                            <span class="w-2 h-2 bg-red-300 rounded-full mr-2 animate-pulse"></span>
-                            👷 Workers: 47 On-Site
+                        <span class="flex items-center bg-gradient-to-r from-red-600 to-pink-600 px-2 sm:px-3 py-1 rounded-full shadow-lg">
+                            <span class="w-2 h-2 bg-red-300 rounded-full mr-1 sm:mr-2 animate-pulse"></span>
+                            <span class="text-xs">👷 47 On-Site</span>
                         </span>
                     </div>
-                    <div class="text-xs text-slate-300">
-                        © 2024 Site Reporting Dashboard • AI-Powered Monitoring • Last updated: <span id="last-updated"></span>
+                    <div class="text-xs text-slate-300 text-center sm:text-left">
+                        <div class="hidden sm:block">© 2024 Site Reporting Dashboard • AI-Powered Monitoring • Last updated: <span id="last-updated"></span></div>
+                        <div class="sm:hidden">© 2024 Site Dashboard • Updated: <span id="last-updated-mobile"></span></div>
                     </div>
                 </div>
             </div>
@@ -275,6 +299,18 @@
                 minute: '2-digit'
             });
             document.getElementById('last-updated').textContent = dateString;
+            
+            // Update mobile timestamp (shorter format)
+            const mobileDateString = now.toLocaleDateString('en-US', {
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            const mobileElement = document.getElementById('last-updated-mobile');
+            if (mobileElement) {
+                mobileElement.textContent = mobileDateString;
+            }
         }
         
         // Get user location and weather
@@ -349,9 +385,17 @@
         // Responsive iframe height adjustment
         function adjustIframeHeight() {
             const iframe = document.querySelector('iframe');
-            if (window.innerWidth < 768) {
+            if (window.innerWidth < 640) {
+                // Mobile phones
+                iframe.style.height = '600px';
+            } else if (window.innerWidth < 768) {
+                // Small tablets
                 iframe.style.height = '800px';
+            } else if (window.innerWidth < 1024) {
+                // Tablets
+                iframe.style.height = '900px';
             } else {
+                // Desktop
                 iframe.style.height = '1068px';
             }
         }
@@ -359,5 +403,5 @@
         window.addEventListener('resize', adjustIframeHeight);
         adjustIframeHeight();
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96f6c2b49298a908',t:'MTc1NTI0MDY1Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96f6caa6255da908',t:'MTc1NTI0MDk4MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
