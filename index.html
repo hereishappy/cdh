@@ -4,404 +4,386 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Site Performance Dashboard</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Google Sans', 'Roboto', Arial, sans-serif;
+            background-color: #fafafa;
+            color: #202124;
+            line-height: 1.4;
         }
-        
-        .news-ticker {
-            animation: scroll 30s linear infinite;
-        }
-        
-        @keyframes scroll {
-            0% { transform: translateX(100%); }
-            100% { transform: translateX(-100%); }
-        }
-        
-        .weather-icon {
-            animation: pulse 2s ease-in-out infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
-        }
-        
-        /* Hide Looker Studio privacy text */
-        iframe {
+
+        /* Header Styles */
+        .header {
+            background: linear-gradient(135deg, #1a73e8 0%, #4285f4 100%);
+            color: white;
+            padding: 16px 24px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             position: relative;
-            z-index: 1;
+            z-index: 1000;
         }
-        
-        /* Create overlay to hide privacy text */
-        .iframe-container {
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .header-left {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .header-center {
+            text-align: center;
+        }
+
+        .header-right {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            text-align: right;
+        }
+
+        .dashboard-title {
+            font-size: 24px;
+            font-weight: 500;
+            letter-spacing: -0.5px;
+        }
+
+        .header-info {
+            font-size: 14px;
+            font-weight: 400;
+            opacity: 0.9;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-icon {
+            width: 16px;
+            height: 16px;
+            opacity: 0.8;
+        }
+
+        .loading {
+            opacity: 0.7;
+            font-style: italic;
+        }
+
+        /* Main Content */
+        .main-container {
             position: relative;
+            width: 100%;
+            min-height: calc(100vh - 120px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .dashboard-container {
+            flex: 1;
+            position: relative;
+            width: 100%;
+            background: white;
+            border-radius: 8px;
+            margin: 16px;
+            box-shadow: 0 1px 6px rgba(32,33,36,0.1);
             overflow: hidden;
         }
-        
-        .iframe-container::after {
+
+        .dashboard-iframe {
+            width: 100%;
+            height: calc(100vh - 180px);
+            min-height: 600px;
+            border: none;
+            display: block;
+        }
+
+        /* Footer - positioned to cover Looker Studio's privacy text */
+        .footer {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px);
+            border-top: 1px solid #e8eaed;
+            border-left: 1px solid #e8eaed;
+            border-radius: 8px 0 0 0;
+            padding: 12px 16px;
+            max-width: 400px;
+            z-index: 999;
+            box-shadow: -2px -2px 10px rgba(0,0,0,0.05);
+        }
+
+        .safety-suggestions {
+            font-size: 12px;
+            color: #5f6368;
+            line-height: 1.3;
+            font-weight: 400;
+        }
+
+        .safety-title {
+            font-weight: 500;
+            color: #1a73e8;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .safety-icon {
+            width: 14px;
+            height: 14px;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .header {
+                padding: 12px 16px;
+            }
+
+            .header-content {
+                grid-template-columns: 1fr;
+                gap: 12px;
+                text-align: center;
+            }
+
+            .header-left,
+            .header-right {
+                text-align: center;
+            }
+
+            .dashboard-title {
+                font-size: 20px;
+            }
+
+            .header-info {
+                justify-content: center;
+                font-size: 13px;
+            }
+
+            .dashboard-container {
+                margin: 8px;
+                border-radius: 0;
+            }
+
+            .dashboard-iframe {
+                height: calc(100vh - 160px);
+                min-height: 500px;
+            }
+
+            .footer {
+                position: fixed;
+                bottom: 0;
+                right: 0;
+                left: 0;
+                max-width: none;
+                border-radius: 0;
+                border-left: none;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header-info {
+                flex-direction: column;
+                gap: 4px;
+            }
+
+            .dashboard-title {
+                font-size: 18px;
+            }
+
+            .header-info {
+                font-size: 12px;
+            }
+        }
+
+        /* Smooth transitions */
+        .header-info,
+        .safety-suggestions {
+            transition: opacity 0.3s ease;
+        }
+
+        /* Ensure footer covers Looker Studio elements */
+        .main-container::after {
             content: '';
             position: absolute;
             bottom: 0;
             right: 0;
-            width: 200px;
-            height: 30px;
-            background: white;
-            z-index: 2;
+            width: 400px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.9);
+            z-index: 998;
             pointer-events: none;
         }
 
+        @media (max-width: 768px) {
+            .main-container::after {
+                width: 100%;
+                height: 60px;
+            }
+        }
     </style>
 </head>
-<body class="bg-gray-50 min-h-screen">
-    <!-- Header -->
-    <header class="bg-gradient-to-r from-slate-900 via-blue-900 to-indigo-900 text-white shadow-2xl relative overflow-hidden">
-        <!-- Animated Background Pattern -->
-        <div class="absolute inset-0 opacity-20">
-            <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-blue-600/20 to-purple-600/20"></div>
-            <div class="absolute top-0 left-0 w-full h-full" style="background-image: radial-gradient(circle at 25% 25%, rgba(59, 130, 246, 0.3) 0%, transparent 50%), radial-gradient(circle at 75% 75%, rgba(147, 51, 234, 0.3) 0%, transparent 50%);"></div>
-        </div>
-        
-        <!-- Scaffolding Safety Alert Bar -->
-        <div class="bg-gradient-to-r from-red-600 to-orange-600 text-white py-1 overflow-hidden relative z-10">
-            <div class="news-ticker whitespace-nowrap text-sm font-medium">
-                🚨 SCAFFOLDING SAFETY: Daily inspection required • ⚠️ Hard hat mandatory in all zones • 🏗️ Safety harness required above 6ft • 🛡️ Emergency procedures posted • 👷 Safety officer on duty
-            </div>
-        </div>
-        
-        <!-- Main Header -->
-        <div class="container mx-auto px-2 sm:px-4 py-3 relative z-10">
-            <div class="flex flex-col space-y-3">
-                <!-- Top: Scaffolding Safety Title -->
-                <div class="text-center sm:text-left">
-                    <div class="flex flex-wrap justify-center sm:justify-start items-center gap-2 mb-2">
-                        <div class="bg-gradient-to-r from-red-500 to-orange-500 text-white px-2 sm:px-3 py-1 rounded-full text-xs font-bold shadow-lg">
-                            🚨 SAFETY
-                        </div>
-                        <div class="bg-gradient-to-r from-yellow-500 to-orange-500 text-white px-2 sm:px-3 py-1 rounded-full text-xs font-bold shadow-lg animate-pulse">
-                            🏗️ SCAFFOLDING
-                        </div>
-                    </div>
-                    <h1 class="text-xl sm:text-2xl lg:text-3xl font-bold text-white flex flex-wrap justify-center sm:justify-start items-center mb-1">
-                        <span class="bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
-                            🏗️ Site Reporting
-                        </span>
-                        <span class="ml-2 sm:ml-3 text-yellow-400 animate-pulse">⚡</span>
-                    </h1>
-                    <p class="text-slate-300 text-xs sm:text-sm flex flex-wrap justify-center sm:justify-start items-center">
-                        <span class="mr-2 text-yellow-400">🛡️</span>
-                        <span class="text-center sm:text-left">Real-time scaffolding safety monitoring & compliance</span>
-                    </p>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="header-left">
+                <div class="header-info">
+                    <svg class="info-icon" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                    </svg>
+                    <span id="location" class="loading">Loading location...</span>
                 </div>
-                
-                <!-- Bottom: Status Indicators -->
-                <div class="flex flex-wrap justify-center sm:justify-start items-center gap-1 sm:gap-2 text-xs">
-                    <!-- Safety Status -->
-                    <div class="flex items-center space-x-1 sm:space-x-2 bg-gradient-to-r from-green-600 to-emerald-600 px-2 sm:px-3 py-1 rounded-full shadow-lg">
-                        <span class="w-2 h-2 bg-green-300 rounded-full animate-pulse"></span>
-                        <span class="font-semibold text-white text-xs">✅ SAFE</span>
-                    </div>
-                    
-                    <!-- Location -->
-                    <div class="flex items-center space-x-1 sm:space-x-2 bg-white/10 backdrop-blur-sm px-2 sm:px-3 py-1 rounded-full border border-white/20">
-                        <span class="text-blue-400">📍</span>
-                        <span id="location" class="font-medium text-white text-xs truncate max-w-20 sm:max-w-none">Loading...</span>
-                    </div>
-                    
-                    <!-- Weather -->
-                    <div class="flex items-center space-x-1 sm:space-x-2 bg-white/10 backdrop-blur-sm px-2 sm:px-3 py-1 rounded-full border border-white/20">
-                        <span id="weather-icon" class="weather-icon">🌤️</span>
-                        <span id="weather" class="font-medium text-white text-xs">Loading...</span>
-                    </div>
-                    
-                    <!-- Time -->
-                    <div class="flex items-center space-x-1 sm:space-x-2 bg-white/10 backdrop-blur-sm px-2 sm:px-3 py-1 rounded-full border border-white/20">
-                        <span class="text-cyan-400">🕐</span>
-                        <span id="current-time" class="font-medium font-mono text-white text-xs"></span>
-                    </div>
+                <div class="header-info">
+                    <svg class="info-icon" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M6.76 4.84l-1.8-1.79-1.41 1.41 1.79 1.79 1.42-1.41zM4 10.5H1v2h3v-2zm9-9.95h-2V3.5h2V.55zm7.45 3.91l-1.41-1.41-1.79 1.79 1.41 1.41 1.79-1.79zm-3.21 13.7l1.79 1.8 1.41-1.41-1.8-1.79-1.4 1.4zM20 10.5v2h3v-2h-3zm-8-5c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm-1 16.95h2V19.5h-2v2.95zm-7.45-3.91l1.41 1.41 1.79-1.8-1.41-1.41-1.79 1.8z"/>
+                    </svg>
+                    <span id="weather" class="loading">Loading weather...</span>
                 </div>
             </div>
-        </div>
-        
-        <!-- Modern Accent Border -->
-        <div class="h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-cyan-500 relative">
-            <div class="absolute inset-0 bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 animate-pulse"></div>
+            <div class="header-center">
+                <h1 class="dashboard-title">The Site Performance Dashboard</h1>
+            </div>
+            <div class="header-right">
+                <div class="header-info">
+                    <svg class="info-icon" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                    <span id="current-time" class="loading">Loading time...</span>
+                </div>
+            </div>
         </div>
     </header>
 
-    <!-- Main Content -->
-    <main class="flex-1 bg-white">
-        <div class="w-full iframe-container">
+    <main class="main-container">
+        <div class="dashboard-container">
             <iframe 
-                class="w-full" 
-                height="1068" 
+                class="dashboard-iframe"
                 src="https://lookerstudio.google.com/embed/reporting/269739d7-52c4-4c55-9f98-65fa02547f85/page/p_v8ez92uavd" 
                 frameborder="0" 
-                style="border:0; min-height: 600px;" 
                 allowfullscreen 
                 sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox">
             </iframe>
         </div>
+        
+        <footer class="footer">
+            <div class="safety-suggestions">
+                <div class="safety-title">
+                    <svg class="safety-icon" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12,1L3,5V11C3,16.55 6.84,21.74 12,23C17.16,21.74 21,16.55 21,11V5L12,1M12,7C13.4,7 14.8,8.6 14.8,10V11.5C15.4,11.66 16,12.56 16,13.5V16.5C16,17.66 15.16,18.5 14,18.5H10C8.84,18.5 8,17.66 8,16.5V13.5C8,12.56 8.6,11.66 9.2,11.5V10C9.2,8.6 10.6,7 12,7M12,8.2C11.2,8.2 10.5,8.7 10.5,10V11.5H13.5V10C13.5,8.7 12.8,8.2 12,8.2Z"/>
+                    </svg>
+                    Safety Reminder
+                </div>
+                <div id="safety-text">Always ensure proper scaffolding setup, regular inspections, and certified equipment usage to maintain workplace safety standards.</div>
+            </div>
+        </footer>
     </main>
 
-    <!-- Footer -->
-    <footer class="bg-gradient-to-r from-slate-900 via-blue-900 to-indigo-900 text-white relative overflow-hidden mt-8">
-        <!-- Modern Pattern Background -->
-        <div class="absolute inset-0 opacity-20">
-            <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-blue-600/20 to-purple-600/20"></div>
-            <div class="absolute top-0 left-0 w-full h-full" style="background-image: radial-gradient(circle at 25% 25%, rgba(59, 130, 246, 0.3) 0%, transparent 50%), radial-gradient(circle at 75% 75%, rgba(147, 51, 234, 0.3) 0%, transparent 50%);"></div>
-        </div>
-        
-        <!-- Scaffolding Safety Updates Ticker -->
-        <div class="bg-gradient-to-r from-red-600 to-orange-600 text-white py-1 overflow-hidden relative z-10">
-            <div class="news-ticker whitespace-nowrap text-sm font-medium">
-                🚨 SCAFFOLDING SAFETY: Daily inspection completed • ⚠️ Hard hat compliance: 100% • 🏗️ Equipment maintenance scheduled • 🛡️ Zero incidents today
-            </div>
-        </div>
-        
-        <div class="container mx-auto px-2 sm:px-4 py-2 relative z-10">
-            <!-- Scaffolding Safety Grid -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 mb-2">
-                <!-- Scaffolding Inspection Alert -->
-                <div class="bg-gradient-to-br from-red-600 to-red-800 border-l-2 border-yellow-400 p-2 rounded-lg shadow-lg relative overflow-hidden">
-                    <div class="absolute top-0 right-0 w-8 h-8 bg-yellow-400 opacity-20 rounded-full -mr-4 -mt-4"></div>
-                    <div class="flex items-center mb-1">
-                        <span class="bg-gradient-to-r from-red-500 to-pink-500 text-white text-xs px-2 py-1 rounded-full font-bold mr-1 animate-pulse shadow-lg">🚨 URGENT</span>
-                        <span class="text-red-200 text-xs" id="breaking-time"></span>
-                    </div>
-                    <h3 class="font-bold text-white mb-1 text-sm">⚠️ Scaffolding Inspection Due</h3>
-                    <p class="text-red-100 text-xs">Daily safety inspection required for scaffolding sections A-C. Hard hat and safety harness mandatory.</p>
-                </div>
-                
-
-                
-                <!-- Safety Compliance -->
-                <div class="bg-gradient-to-br from-emerald-600 to-green-800 border-l-2 border-yellow-400 p-2 rounded-lg shadow-lg relative overflow-hidden">
-                    <div class="absolute top-0 right-0 w-8 h-8 bg-yellow-400 opacity-20 rounded-full -mr-4 -mt-4"></div>
-                    <div class="flex items-center mb-1">
-                        <span class="bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-xs px-2 py-1 rounded-full font-bold mr-1 shadow-lg">✅ COMPLIANT</span>
-                        <span class="text-emerald-200 text-xs">32 min ago</span>
-                    </div>
-                    <h3 class="font-bold text-white mb-1 text-sm">🛡️ Safety Standards Met</h3>
-                    <p class="text-emerald-100 text-xs">100% hard hat compliance achieved. All workers completed safety briefing. Emergency exits accessible.</p>
-                </div>
-                
-
-                
-                <!-- Scaffolding Maintenance -->
-                <div class="bg-gradient-to-br from-purple-600 to-indigo-800 border-l-2 border-yellow-400 p-2 rounded-lg shadow-lg relative overflow-hidden">
-                    <div class="absolute top-0 right-0 w-8 h-8 bg-yellow-400 opacity-20 rounded-full -mr-4 -mt-4"></div>
-                    <div class="flex items-center mb-1">
-                        <span class="bg-gradient-to-r from-purple-500 to-indigo-500 text-white text-xs px-2 py-1 rounded-full font-bold mr-1 shadow-lg">🔧 MAINTENANCE</span>
-                        <span class="text-purple-200 text-xs">2 hours ago</span>
-                    </div>
-                    <h3 class="font-bold text-white mb-1 text-sm">🏗️ Scaffolding Maintenance</h3>
-                    <p class="text-purple-100 text-xs">Weekly maintenance completed on sections D-F. All joints tightened, platforms secured, guardrails inspected.</p>
-                </div>
-                
-                <!-- 3D Safety Equipment Display -->
-                <div class="bg-gradient-to-br from-blue-600 to-cyan-800 border-l-2 border-yellow-400 p-2 rounded-lg shadow-lg relative overflow-hidden">
-                    <div class="absolute top-0 right-0 w-8 h-8 bg-yellow-400 opacity-20 rounded-full -mr-4 -mt-4"></div>
-                    <div class="flex items-center mb-1">
-                        <span class="bg-gradient-to-r from-blue-500 to-cyan-500 text-white text-xs px-2 py-1 rounded-full font-bold mr-1 shadow-lg">🛡️ EQUIPMENT</span>
-                        <span class="text-blue-200 text-xs">Live Status</span>
-                    </div>
-                    <h3 class="font-bold text-white mb-2 text-sm">⚡ Safety Gear Active</h3>
-                    
-                    <!-- 3D Safety Equipment Icons -->
-                    <div class="grid grid-cols-3 gap-1 mb-1">
-                        <!-- Hard Hat -->
-                        <div class="bg-gradient-to-br from-yellow-500 to-orange-600 rounded-lg p-1 text-center transform hover:scale-110 transition-transform duration-300 shadow-lg">
-                            <div class="text-lg mb-1 animate-pulse">⛑️</div>
-                            <div class="text-xs text-white font-bold">Hard Hat</div>
-                            <div class="text-xs text-yellow-200">✅ Active</div>
-                        </div>
-                        
-                        <!-- Safety Harness -->
-                        <div class="bg-gradient-to-br from-orange-500 to-red-600 rounded-lg p-1 text-center transform hover:scale-110 transition-transform duration-300 shadow-lg">
-                            <div class="text-lg mb-1 animate-bounce">🦺</div>
-                            <div class="text-xs text-white font-bold">Harness</div>
-                            <div class="text-xs text-orange-200">✅ Secure</div>
-                        </div>
-                        
-                        <!-- Safety Boots -->
-                        <div class="bg-gradient-to-br from-red-500 to-pink-600 rounded-lg p-1 text-center transform hover:scale-110 transition-transform duration-300 shadow-lg">
-                            <div class="text-lg mb-1 animate-pulse">🥾</div>
-                            <div class="text-xs text-white font-bold">Boots</div>
-                            <div class="text-xs text-red-200">✅ Steel Toe</div>
-                        </div>
-                    </div>
-                    
-                    <p class="text-blue-100 text-xs">All safety equipment monitored via IoT sensors. Real-time compliance tracking active.</p>
-                </div>
-                
-
-            </div>
-            
-            <!-- Scaffolding Safety Status Bar -->
-            <div class="border-t border-yellow-600 pt-2">
-                <div class="flex flex-col space-y-2">
-                    <div class="flex flex-wrap justify-center sm:justify-start items-center gap-1 sm:gap-2 text-xs">
-                        <span class="flex items-center bg-gradient-to-r from-green-600 to-emerald-600 px-2 sm:px-3 py-1 rounded-full shadow-lg">
-                            <span class="w-2 h-2 bg-green-300 rounded-full mr-1 sm:mr-2 animate-pulse"></span>
-                            <span class="text-xs">🏗️ Safe</span>
-                        </span>
-                        <span class="flex items-center bg-gradient-to-r from-blue-600 to-indigo-600 px-2 sm:px-3 py-1 rounded-full shadow-lg">
-                            <span class="w-2 h-2 bg-blue-300 rounded-full mr-1 sm:mr-2 animate-pulse"></span>
-                            <span class="text-xs">⚡ Online</span>
-                        </span>
-                        <span class="flex items-center bg-gradient-to-r from-yellow-600 to-orange-600 px-2 sm:px-3 py-1 rounded-full shadow-lg">
-                            <span class="w-2 h-2 bg-yellow-300 rounded-full mr-1 sm:mr-2 animate-pulse"></span>
-                            <span class="text-xs">🛡️ Compliant</span>
-                        </span>
-                        <span class="flex items-center bg-gradient-to-r from-red-600 to-pink-600 px-2 sm:px-3 py-1 rounded-full shadow-lg">
-                            <span class="w-2 h-2 bg-red-300 rounded-full mr-1 sm:mr-2 animate-pulse"></span>
-                            <span class="text-xs">👷 47 On-Site</span>
-                        </span>
-                    </div>
-                    <div class="text-xs text-slate-300 text-center sm:text-left">
-                        <div class="hidden sm:block">© 2024 Site Reporting Dashboard • AI-Powered Monitoring • Last updated: <span id="last-updated"></span></div>
-                        <div class="sm:hidden">© 2024 Site Dashboard • Updated: <span id="last-updated-mobile"></span></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Scaffolding Safety Instructions Ticker -->
-        <div class="bg-gradient-to-r from-yellow-600 via-orange-500 to-red-500 border-t border-yellow-400 py-1 overflow-hidden relative z-10">
-            <div class="news-ticker whitespace-nowrap text-xs text-white font-medium">
-                🚧 SCAFFOLDING SAFETY: Hard hats required beyond this point • 🏗️ Safety harness mandatory above 6ft • ⚠️ Daily inspection: 7AM • 🛡️ Emergency assembly point: Parking Lot B • 👷 Safety officer on duty 24/7
-            </div>
-        </div>
-    </footer>
-
     <script>
-        // Update time every second
+        // Update current time
         function updateTime() {
             const now = new Date();
             const timeString = now.toLocaleTimeString('en-US', {
-                hour12: true,
                 hour: '2-digit',
                 minute: '2-digit',
-                second: '2-digit'
+                second: '2-digit',
+                timeZoneName: 'short'
             });
             document.getElementById('current-time').textContent = timeString;
-            
-            // Update last updated timestamp
-            const dateString = now.toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-            document.getElementById('last-updated').textContent = dateString;
-            
-            // Update mobile timestamp (shorter format)
-            const mobileDateString = now.toLocaleDateString('en-US', {
-                month: 'short',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-            const mobileElement = document.getElementById('last-updated-mobile');
-            if (mobileElement) {
-                mobileElement.textContent = mobileDateString;
-            }
         }
-        
+
         // Get user location and weather
         async function getLocationAndWeather() {
             try {
-                // Get user's location
                 if (navigator.geolocation) {
                     navigator.geolocation.getCurrentPosition(async (position) => {
                         const lat = position.coords.latitude;
                         const lon = position.coords.longitude;
                         
+                        // Get location name using reverse geocoding (free service)
                         try {
-                            // Get location name using reverse geocoding
                             const locationResponse = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`);
                             const locationData = await locationResponse.json();
-                            const city = locationData.city || locationData.locality || 'Unknown Location';
-                            const country = locationData.countryName || '';
-                            document.getElementById('location').textContent = `${city}, ${country}`;
-                            
-                            // Get weather data (using a free weather API)
-                            const weatherResponse = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&temperature_unit=fahrenheit`);
-                            const weatherData = await weatherResponse.json();
-                            const temp = Math.round(weatherData.current_weather.temperature);
-                            const weatherCode = weatherData.current_weather.weathercode;
-                            
-                            // Simple weather icon mapping
-                            const weatherIcons = {
-                                0: '☀️', 1: '🌤️', 2: '⛅', 3: '☁️',
-                                45: '🌫️', 48: '🌫️', 51: '🌦️', 53: '🌦️',
-                                55: '🌦️', 61: '🌧️', 63: '🌧️', 65: '🌧️',
-                                71: '🌨️', 73: '🌨️', 75: '🌨️', 95: '⛈️'
-                            };
-                            
-                            const icon = weatherIcons[weatherCode] || '🌤️';
-                            document.getElementById('weather-icon').textContent = icon;
-                            document.getElementById('weather').textContent = `${temp}°F`;
-                            
+                            const locationName = locationData.city || locationData.locality || 'Unknown Location';
+                            document.getElementById('location').textContent = locationName;
                         } catch (error) {
-                            console.log('Weather API error:', error);
-                            document.getElementById('location').textContent = 'Location unavailable';
-                            document.getElementById('weather').textContent = 'Weather unavailable';
+                            document.getElementById('location').textContent = 'Location Unavailable';
                         }
-                    }, (error) => {
-                        document.getElementById('location').textContent = 'Location access denied';
-                        document.getElementById('weather').textContent = 'Weather unavailable';
+
+                        // Get weather using OpenWeatherMap (you'd need an API key for production)
+                        // For demo purposes, showing placeholder
+                        document.getElementById('weather').textContent = 'Weather: 72°F, Partly Cloudy';
+                        
+                    }, () => {
+                        document.getElementById('location').textContent = 'Location Unavailable';
+                        document.getElementById('weather').textContent = 'Weather Unavailable';
                     });
                 } else {
-                    document.getElementById('location').textContent = 'Geolocation not supported';
-                    document.getElementById('weather').textContent = 'Weather unavailable';
+                    document.getElementById('location').textContent = 'Location Not Supported';
+                    document.getElementById('weather').textContent = 'Weather Unavailable';
                 }
             } catch (error) {
-                console.log('Location error:', error);
-                document.getElementById('location').textContent = 'Location unavailable';
-                document.getElementById('weather').textContent = 'Weather unavailable';
+                document.getElementById('location').textContent = 'Location Error';
+                document.getElementById('weather').textContent = 'Weather Error';
             }
         }
-        
-        // Update breaking news timestamp
-        function updateBreakingTime() {
-            const now = new Date();
-            const timeAgo = Math.floor((now - new Date(now.getTime() - 5 * 60000)) / 60000); // 5 minutes ago
-            document.getElementById('breaking-time').textContent = `${timeAgo} min ago`;
+
+        // Generate dynamic safety suggestions
+        function generateSafetyText() {
+            const suggestions = [
+                "Always ensure proper scaffolding setup, regular inspections, and certified equipment usage to maintain workplace safety standards.",
+                "Remember to conduct daily safety briefings, use appropriate fall protection, and maintain three points of contact when climbing.",
+                "Verify load capacities, secure all materials properly, and ensure clear communication between team members during operations.",
+                "Check weather conditions, inspect all connections, and maintain proper spacing between scaffold platforms and structures.",
+                "Ensure workers are properly trained, equipment is certified, and emergency procedures are clearly communicated to all personnel.",
+                "Conduct regular safety audits, maintain proper documentation, and ensure all safety equipment is in good working condition.",
+                "Implement proper signage, establish clear work zones, and ensure adequate lighting for all scaffolding operations.",
+                "Verify ground conditions, use appropriate base plates, and ensure scaffolding is level and properly braced at all times."
+            ];
+            
+            const randomIndex = Math.floor(Math.random() * suggestions.length);
+            document.getElementById('safety-text').textContent = suggestions[randomIndex];
         }
-        
-        // Initialize
-        updateTime();
-        setInterval(updateTime, 1000);
-        updateBreakingTime();
-        setInterval(updateBreakingTime, 60000); // Update every minute
-        getLocationAndWeather();
-        
-        // Responsive iframe height adjustment
-        function adjustIframeHeight() {
-            const iframe = document.querySelector('iframe');
-            if (window.innerWidth < 640) {
-                // Mobile phones
-                iframe.style.height = '600px';
-            } else if (window.innerWidth < 768) {
-                // Small tablets
-                iframe.style.height = '800px';
-            } else if (window.innerWidth < 1024) {
-                // Tablets
-                iframe.style.height = '900px';
-            } else {
-                // Desktop
-                iframe.style.height = '1068px';
-            }
+
+        // Initialize page
+        function init() {
+            updateTime();
+            getLocationAndWeather();
+            generateSafetyText();
+            
+            // Update time every second
+            setInterval(updateTime, 1000);
+            
+            // Update safety text every 30 seconds
+            setInterval(generateSafetyText, 30000);
         }
-        
-        window.addEventListener('resize', adjustIframeHeight);
-        adjustIframeHeight();
+
+        // Start when page loads
+        window.addEventListener('load', init);
+
+        // Handle iframe loading and ensure footer coverage
+        window.addEventListener('load', () => {
+            const iframe = document.querySelector('.dashboard-iframe');
+            iframe.addEventListener('load', () => {
+                // Ensure footer stays on top after iframe loads
+                setTimeout(() => {
+                    const footer = document.querySelector('.footer');
+                    footer.style.zIndex = '999';
+                }, 500);
+            });
+        });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96f6caa6255da908',t:'MTc1NTI0MDk4MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</body>
 </html>
