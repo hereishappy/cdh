@@ -57,7 +57,7 @@
   </header>
 
   <iframe 
-    src="https://lookerstudio.google.com/embed/reporting/269739d7-52c4-4c55-9f98-65fa02547f85/page/page_12345"
+    src="https://lookerstudio.google.com/embed/reporting/269739d7-52c4-4c55-9f98-65fa02547f85/page/p_v8ez92uavd"
     allowfullscreen
     sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox">
   </iframe>
@@ -85,7 +85,6 @@
         let weatherData = await weatherRes.json();
         temperature = weatherData.current_weather.temperature;
         windSpeed = weatherData.current_weather.windspeed;
-        condition = weatherData.current_weather.weathercode; // You can map codes to conditions if needed
 
         // Build ticker
         updateTicker();
