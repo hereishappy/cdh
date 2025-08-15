@@ -19,61 +19,100 @@
             line-height: 1.4;
         }
 
-        /* Header Styles */
+        /* News Ticker Header Styles */
         .header {
-            background: linear-gradient(135deg, #1a73e8 0%, #4285f4 100%);
+            background: linear-gradient(90deg, #1a73e8 0%, #4285f4 50%, #1a73e8 100%);
             color: white;
-            padding: 16px 24px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            height: 40px;
+            overflow: hidden;
             position: relative;
             z-index: 1000;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
         }
 
-        .header-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 1fr auto 1fr;
-            gap: 20px;
+        .ticker-wrapper {
+            position: relative;
+            height: 100%;
+            display: flex;
             align-items: center;
         }
 
-        .header-left {
+        .ticker-label {
+            background: #ea4335;
+            color: white;
+            padding: 0 16px;
+            height: 100%;
             display: flex;
-            flex-direction: column;
-            gap: 4px;
+            align-items: center;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            flex-shrink: 0;
+            position: relative;
         }
 
-        .header-center {
-            text-align: center;
+        .ticker-label::after {
+            content: '';
+            position: absolute;
+            right: -10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-left: 10px solid #ea4335;
+            border-top: 20px solid transparent;
+            border-bottom: 20px solid transparent;
         }
 
-        .header-right {
+        .ticker-content {
+            flex: 1;
+            height: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .ticker-scroll {
             display: flex;
-            flex-direction: column;
-            gap: 4px;
-            text-align: right;
+            align-items: center;
+            height: 100%;
+            animation: scroll-left 30s linear infinite;
+            white-space: nowrap;
+        }
+
+        @keyframes scroll-left {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
+        .ticker-item {
+            display: inline-flex;
+            align-items: center;
+            margin-right: 40px;
+            font-size: 13px;
+            font-weight: 400;
+            white-space: nowrap;
+        }
+
+        .ticker-separator {
+            display: inline-block;
+            width: 4px;
+            height: 4px;
+            background: rgba(255,255,255,0.6);
+            border-radius: 50%;
+            margin: 0 16px;
+        }
+
+        .ticker-icon {
+            width: 14px;
+            height: 14px;
+            margin-right: 6px;
+            opacity: 0.9;
         }
 
         .dashboard-title {
-            font-size: 24px;
-            font-weight: 500;
-            letter-spacing: -0.5px;
-        }
-
-        .header-info {
-            font-size: 14px;
-            font-weight: 400;
-            opacity: 0.9;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .info-icon {
-            width: 16px;
-            height: 16px;
-            opacity: 0.8;
+            font-weight: 600;
+            color: #fff;
         }
 
         .loading {
@@ -85,7 +124,7 @@
         .main-container {
             position: relative;
             width: 100%;
-            min-height: calc(100vh - 120px);
+            min-height: calc(100vh - 80px);
             display: flex;
             flex-direction: column;
         }
@@ -103,7 +142,7 @@
 
         .dashboard-iframe {
             width: 100%;
-            height: calc(100vh - 180px);
+            height: calc(100vh - 140px);
             min-height: 600px;
             border: none;
             display: block;
@@ -149,27 +188,22 @@
         /* Mobile Responsive */
         @media (max-width: 768px) {
             .header {
-                padding: 12px 16px;
+                height: 36px;
             }
 
-            .header-content {
-                grid-template-columns: 1fr;
-                gap: 12px;
-                text-align: center;
+            .ticker-label {
+                padding: 0 12px;
+                font-size: 11px;
             }
 
-            .header-left,
-            .header-right {
-                text-align: center;
+            .ticker-item {
+                font-size: 12px;
+                margin-right: 30px;
             }
 
-            .dashboard-title {
-                font-size: 20px;
-            }
-
-            .header-info {
-                justify-content: center;
-                font-size: 13px;
+            .ticker-icon {
+                width: 12px;
+                height: 12px;
             }
 
             .dashboard-container {
@@ -178,7 +212,7 @@
             }
 
             .dashboard-iframe {
-                height: calc(100vh - 160px);
+                height: calc(100vh - 120px);
                 min-height: 500px;
             }
 
@@ -192,20 +226,30 @@
                 border-left: none;
                 text-align: center;
             }
+
+            .main-container::after {
+                width: 100%;
+                height: 60px;
+            }
         }
 
         @media (max-width: 480px) {
-            .header-info {
-                flex-direction: column;
-                gap: 4px;
+            .header {
+                height: 32px;
             }
 
-            .dashboard-title {
-                font-size: 18px;
+            .ticker-label {
+                padding: 0 8px;
+                font-size: 10px;
             }
 
-            .header-info {
-                font-size: 12px;
+            .ticker-item {
+                font-size: 11px;
+                margin-right: 20px;
+            }
+
+            .ticker-scroll {
+                animation-duration: 25s;
             }
         }
 
@@ -238,30 +282,38 @@
 </head>
 <body>
     <header class="header">
-        <div class="header-content">
-            <div class="header-left">
-                <div class="header-info">
-                    <svg class="info-icon" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-                    </svg>
-                    <span id="location" class="loading">Loading location...</span>
-                </div>
-                <div class="header-info">
-                    <svg class="info-icon" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M6.76 4.84l-1.8-1.79-1.41 1.41 1.79 1.79 1.42-1.41zM4 10.5H1v2h3v-2zm9-9.95h-2V3.5h2V.55zm7.45 3.91l-1.41-1.41-1.79 1.79 1.41 1.41 1.79-1.79zm-3.21 13.7l1.79 1.8 1.41-1.41-1.8-1.79-1.4 1.4zM20 10.5v2h3v-2h-3zm-8-5c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm-1 16.95h2V19.5h-2v2.95zm-7.45-3.91l1.41 1.41 1.79-1.8-1.41-1.41-1.79 1.8z"/>
-                    </svg>
-                    <span id="weather" class="loading">Loading weather...</span>
-                </div>
-            </div>
-            <div class="header-center">
-                <h1 class="dashboard-title">The Site Performance Dashboard</h1>
-            </div>
-            <div class="header-right">
-                <div class="header-info">
-                    <svg class="info-icon" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                    </svg>
-                    <span id="current-time" class="loading">Loading time...</span>
+        <div class="ticker-wrapper">
+            <div class="ticker-label">LIVE</div>
+            <div class="ticker-content">
+                <div class="ticker-scroll">
+                    <div class="ticker-item">
+                        <svg class="ticker-icon" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                        </svg>
+                        Hyderabad, India
+                    </div>
+                    <span class="ticker-separator"></span>
+                    <div class="ticker-item">
+                        <svg class="ticker-icon" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                        </svg>
+                        <span id="current-time" class="loading">Loading...</span>
+                    </div>
+                    <span class="ticker-separator"></span>
+                    <div class="ticker-item">
+                        <svg class="ticker-icon" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M6.76 4.84l-1.8-1.79-1.41 1.41 1.79 1.79 1.42-1.41zM4 10.5H1v2h3v-2zm9-9.95h-2V3.5h2V.55zm7.45 3.91l-1.41-1.41-1.79 1.79 1.41 1.41 1.79-1.79zm-3.21 13.7l1.79 1.8 1.41-1.41-1.8-1.79-1.4 1.4zM20 10.5v2h3v-2h-3zm-8-5c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm-1 16.95h2V19.5h-2v2.95zm-7.45-3.91l1.41 1.41 1.79-1.8-1.41-1.41-1.79 1.8z"/>
+                        </svg>
+                        <span id="weather" class="loading">Loading...</span>
+                    </div>
+                    <span class="ticker-separator"></span>
+                    <div class="ticker-item dashboard-title">
+                        📊 Site Performance Dashboard
+                    </div>
+                    <span class="ticker-separator"></span>
+                    <div class="ticker-item">
+                        Real-time Analytics & Monitoring
+                    </div>
                 </div>
             </div>
         </div>
@@ -292,107 +344,39 @@
     </main>
 
     <script>
-        // Update current time
+        // Update current time for IST (India Standard Time)
         function updateTime() {
             const now = new Date();
-            const timeString = now.toLocaleTimeString('en-US', {
+            const istTime = new Date(now.toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
+            const timeString = istTime.toLocaleTimeString('en-IN', {
                 hour: '2-digit',
                 minute: '2-digit',
                 second: '2-digit',
-                timeZoneName: 'short'
+                hour12: true
             });
-            document.getElementById('current-time').textContent = timeString;
+            document.getElementById('current-time').textContent = `${timeString} IST`;
         }
 
-        // Get user location and weather
-        async function getLocationAndWeather() {
+        // Get Hyderabad weather specifically
+        async function getHyderabadWeather() {
             try {
-                if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(async (position) => {
-                        const lat = position.coords.latitude;
-                        const lon = position.coords.longitude;
-                        
-                        // Get location name using reverse geocoding (free service)
-                        try {
-                            const locationResponse = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`);
-                            const locationData = await locationResponse.json();
-                            const locationName = `${locationData.city || locationData.locality || 'Unknown'}, ${locationData.countryCode || ''}`;
-                            document.getElementById('location').textContent = locationName;
-                        } catch (error) {
-                            console.error('Location error:', error);
-                            document.getElementById('location').textContent = 'Location Unavailable';
-                        }
-
-                        // Get weather using Open-Meteo (free weather API, no key required)
-                        try {
-                            const weatherResponse = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weather_code&timezone=auto&temperature_unit=fahrenheit`);
-                            const weatherData = await weatherResponse.json();
-                            
-                            const temp = Math.round(weatherData.current.temperature_2m);
-                            const humidity = weatherData.current.relative_humidity_2m;
-                            const weatherCode = weatherData.current.weather_code;
-                            
-                            // Convert weather code to description
-                            const weatherDescription = getWeatherDescription(weatherCode);
-                            
-                            document.getElementById('weather').textContent = `${temp}°F, ${weatherDescription}`;
-                        } catch (error) {
-                            console.error('Weather error:', error);
-                            document.getElementById('weather').textContent = 'Weather Unavailable';
-                        }
-                        
-                    }, (error) => {
-                        console.error('Geolocation error:', error);
-                        document.getElementById('location').textContent = 'Location Access Denied';
-                        document.getElementById('weather').textContent = 'Weather Unavailable';
-                        
-                        // Fallback to IP-based location
-                        getLocationByIP();
-                    }, {
-                        enableHighAccuracy: true,
-                        timeout: 10000,
-                        maximumAge: 600000 // 10 minutes cache
-                    });
-                } else {
-                    document.getElementById('location').textContent = 'Location Not Supported';
-                    document.getElementById('weather').textContent = 'Weather Unavailable';
-                    getLocationByIP();
-                }
-            } catch (error) {
-                console.error('Location/Weather error:', error);
-                document.getElementById('location').textContent = 'Location Error';
-                document.getElementById('weather').textContent = 'Weather Error';
-                getLocationByIP();
-            }
-        }
-
-        // Fallback location detection using IP
-        async function getLocationByIP() {
-            try {
-                const ipResponse = await fetch('https://api.bigdatacloud.net/data/client-ip');
-                const ipData = await ipResponse.json();
+                // Hyderabad coordinates
+                const lat = 17.3850;
+                const lon = 78.4867;
                 
-                if (ipData.ipString) {
-                    const locationResponse = await fetch(`https://api.bigdatacloud.net/data/ip-geolocation?ip=${ipData.ipString}&key=free`);
-                    const locationData = await locationResponse.json();
-                    
-                    if (locationData.city) {
-                        document.getElementById('location').textContent = `${locationData.city}, ${locationData.countryCode}`;
-                        
-                        // Get weather for IP location
-                        const weatherResponse = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${locationData.location.latitude}&longitude=${locationData.location.longitude}&current=temperature_2m,weather_code&timezone=auto&temperature_unit=fahrenheit`);
-                        const weatherData = await weatherResponse.json();
-                        
-                        const temp = Math.round(weatherData.current.temperature_2m);
-                        const weatherDescription = getWeatherDescription(weatherData.current.weather_code);
-                        
-                        document.getElementById('weather').textContent = `${temp}°F, ${weatherDescription}`;
-                    }
-                }
+                // Get weather for Hyderabad using Open-Meteo
+                const weatherResponse = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code&timezone=Asia/Kolkata&temperature_unit=celsius`);
+                const weatherData = await weatherResponse.json();
+                
+                const temp = Math.round(weatherData.current.temperature_2m);
+                const weatherCode = weatherData.current.weather_code;
+                const weatherDescription = getWeatherDescription(weatherCode);
+                
+                document.getElementById('weather').textContent = `${temp}°C, ${weatherDescription}`;
+                
             } catch (error) {
-                console.error('IP location error:', error);
-                document.getElementById('location').textContent = 'Global Location';
-                document.getElementById('weather').textContent = 'Weather N/A';
+                console.error('Weather error:', error);
+                document.getElementById('weather').textContent = 'Weather Unavailable';
             }
         }
 
@@ -448,11 +432,14 @@
         // Initialize page
         function init() {
             updateTime();
-            getLocationAndWeather();
+            getHyderabadWeather();
             generateSafetyText();
             
             // Update time every second
             setInterval(updateTime, 1000);
+            
+            // Update weather every 10 minutes
+            setInterval(getHyderabadWeather, 600000);
             
             // Update safety text every 30 seconds
             setInterval(generateSafetyText, 30000);
