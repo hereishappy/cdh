@@ -15,15 +15,14 @@
       align-items: center;
     }
 
-    header {
+    /* Ticker Styles */
+    header, footer {
       width: 100%;
       background: linear-gradient(90deg, #004aad, #0077ff);
       color: white;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
       overflow: hidden;
       white-space: nowrap;
       font-size: 0.9rem;
-      position: relative;
       height: 35px;
     }
 
@@ -41,26 +40,37 @@
       100% { transform: translateX(-50%); }
     }
 
+    /* Dashboard */
     iframe {
       border: none;
       width: 100%;
       max-width: 1200px;
-      height: 90vh;
+      height: calc(90vh - 70px); /* space for tickers */
     }
   </style>
 </head>
 <body>
+
+  <!-- Top Ticker -->
   <header>
-    <div id="ticker" class="ticker-wrap">
+    <div id="ticker-top" class="ticker-wrap">
       <span class="ticker-item">📊 Loading site info...</span>
     </div>
   </header>
 
+  <!-- Dashboard Embed -->
   <iframe 
     src="https://lookerstudio.google.com/embed/reporting/269739d7-52c4-4c55-9f98-65fa02547f85/page/p_v8ez92uavd"
     allowfullscreen
     sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox">
   </iframe>
+
+  <!-- Bottom Ticker -->
+  <footer>
+    <div id="ticker-bottom" class="ticker-wrap">
+      <span class="ticker-item">⛑️ Loading safety instructions...</span>
+    </div>
+  </footer>
 
   <script>
     let userLocation = "Unknown";
@@ -68,37 +78,36 @@
     let userCountry = "";
     let temperature = "";
     let windSpeed = "";
-    let condition = "";
     let localTime = "";
 
-    async function fetchData() {
+    // Fetch Location & Weather
+    async function fetchTopTickerData() {
       try {
-        // Get location
         let locRes = await fetch("https://ipapi.co/json/");
         let locData = await locRes.json();
         userLocation = locData.city;
         userRegion = locData.region;
         userCountry = locData.country_name;
 
-        // Get weather
         let weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${locData.latitude}&longitude=${locData.longitude}&current_weather=true`);
         let weatherData = await weatherRes.json();
         temperature = weatherData.current_weather.temperature;
         windSpeed = weatherData.current_weather.windspeed;
 
-        // Build ticker
-        updateTicker();
-      } catch (error) {
-        document.getElementById("ticker").innerHTML = "<span class='ticker-item'>⚠️ Unable to fetch live location/weather data</span>";
+        updateTopTicker();
+      } catch {
+        document.getElementById("ticker-top").innerHTML = "<span class='ticker-item'>⚠️ Unable to fetch location/weather</span>";
       }
     }
 
-    function getLocalTime() {
+    // Time updater
+    function updateTime() {
       localTime = new Date().toLocaleTimeString();
-      updateTicker();
+      updateTopTicker();
     }
 
-    function updateTicker() {
+    // Top Ticker Builder
+    function updateTopTicker() {
       let updates = [
         `📍 Location: ${userLocation}, ${userRegion}, ${userCountry}`,
         `⏰ Local Time: ${localTime}`,
@@ -109,8 +118,7 @@
         "🌦️ Weather Alert: Light Rain Expected"
       ];
 
-      // Fill twice for continuous loop
-      let ticker = document.getElementById("ticker");
+      let ticker = document.getElementById("ticker-top");
       ticker.innerHTML = "";
       for (let i = 0; i < 2; i++) {
         updates.forEach(text => {
@@ -122,14 +130,43 @@
       }
     }
 
-    // Initial load
-    fetchData();
+    // Bottom Ticker - AI Safety Tips (static for now, can hook to API)
+    function updateBottomTicker() {
+      let safetyTips = [
+        "⛑️ Always wear your safety helmet on site.",
+        "🚧 Keep walkways clear of debris to prevent trips.",
+        "⚡ Check all electrical tools before use.",
+        "🦺 Wear high-visibility vests at all times.",
+        "📏 Maintain safe distances from operating machinery.",
+        "🛠️ Use the right tool for the job.",
+        "🚨 Report unsafe conditions immediately to a supervisor."
+      ];
 
-    // Update time every second
-    setInterval(getLocalTime, 1000);
+      let ticker = document.getElementById("ticker-bottom");
+      ticker.innerHTML = "";
+      for (let i = 0; i < 2; i++) {
+        safetyTips.forEach(text => {
+          let span = document.createElement("span");
+          span.className = "ticker-item";
+          span.textContent = text;
+          ticker.appendChild(span);
+        });
+      }
+    }
 
-    // Refresh weather/location every 30 minutes
-    setInterval(fetchData, 1800000);
+    // Init
+    fetchTopTickerData();
+    updateBottomTicker();
+
+    // Time updates every second
+    setInterval(updateTime, 1000);
+
+    // Weather refresh every 30 mins
+    setInterval(fetchTopTickerData, 1800000);
+
+    // Safety tips refresh every hour (could be AI API in future)
+    setInterval(updateBottomTicker, 3600000);
   </script>
+
 </body>
 </html>
