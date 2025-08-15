@@ -316,28 +316,116 @@
                         try {
                             const locationResponse = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`);
                             const locationData = await locationResponse.json();
-                            const locationName = locationData.city || locationData.locality || 'Unknown Location';
+                            const locationName = `${locationData.city || locationData.locality || 'Unknown'}, ${locationData.countryCode || ''}`;
                             document.getElementById('location').textContent = locationName;
                         } catch (error) {
+                            console.error('Location error:', error);
                             document.getElementById('location').textContent = 'Location Unavailable';
                         }
 
-                        // Get weather using OpenWeatherMap (you'd need an API key for production)
-                        // For demo purposes, showing placeholder
-                        document.getElementById('weather').textContent = 'Weather: 72°F, Partly Cloudy';
+                        // Get weather using Open-Meteo (free weather API, no key required)
+                        try {
+                            const weatherResponse = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weather_code&timezone=auto&temperature_unit=fahrenheit`);
+                            const weatherData = await weatherResponse.json();
+                            
+                            const temp = Math.round(weatherData.current.temperature_2m);
+                            const humidity = weatherData.current.relative_humidity_2m;
+                            const weatherCode = weatherData.current.weather_code;
+                            
+                            // Convert weather code to description
+                            const weatherDescription = getWeatherDescription(weatherCode);
+                            
+                            document.getElementById('weather').textContent = `${temp}°F, ${weatherDescription}`;
+                        } catch (error) {
+                            console.error('Weather error:', error);
+                            document.getElementById('weather').textContent = 'Weather Unavailable';
+                        }
                         
-                    }, () => {
-                        document.getElementById('location').textContent = 'Location Unavailable';
+                    }, (error) => {
+                        console.error('Geolocation error:', error);
+                        document.getElementById('location').textContent = 'Location Access Denied';
                         document.getElementById('weather').textContent = 'Weather Unavailable';
+                        
+                        // Fallback to IP-based location
+                        getLocationByIP();
+                    }, {
+                        enableHighAccuracy: true,
+                        timeout: 10000,
+                        maximumAge: 600000 // 10 minutes cache
                     });
                 } else {
                     document.getElementById('location').textContent = 'Location Not Supported';
                     document.getElementById('weather').textContent = 'Weather Unavailable';
+                    getLocationByIP();
                 }
             } catch (error) {
+                console.error('Location/Weather error:', error);
                 document.getElementById('location').textContent = 'Location Error';
                 document.getElementById('weather').textContent = 'Weather Error';
+                getLocationByIP();
             }
+        }
+
+        // Fallback location detection using IP
+        async function getLocationByIP() {
+            try {
+                const ipResponse = await fetch('https://api.bigdatacloud.net/data/client-ip');
+                const ipData = await ipResponse.json();
+                
+                if (ipData.ipString) {
+                    const locationResponse = await fetch(`https://api.bigdatacloud.net/data/ip-geolocation?ip=${ipData.ipString}&key=free`);
+                    const locationData = await locationResponse.json();
+                    
+                    if (locationData.city) {
+                        document.getElementById('location').textContent = `${locationData.city}, ${locationData.countryCode}`;
+                        
+                        // Get weather for IP location
+                        const weatherResponse = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${locationData.location.latitude}&longitude=${locationData.location.longitude}&current=temperature_2m,weather_code&timezone=auto&temperature_unit=fahrenheit`);
+                        const weatherData = await weatherResponse.json();
+                        
+                        const temp = Math.round(weatherData.current.temperature_2m);
+                        const weatherDescription = getWeatherDescription(weatherData.current.weather_code);
+                        
+                        document.getElementById('weather').textContent = `${temp}°F, ${weatherDescription}`;
+                    }
+                }
+            } catch (error) {
+                console.error('IP location error:', error);
+                document.getElementById('location').textContent = 'Global Location';
+                document.getElementById('weather').textContent = 'Weather N/A';
+            }
+        }
+
+        // Convert weather codes to descriptions
+        function getWeatherDescription(code) {
+            const weatherCodes = {
+                0: 'Clear Sky',
+                1: 'Mainly Clear',
+                2: 'Partly Cloudy',
+                3: 'Overcast',
+                45: 'Foggy',
+                48: 'Rime Fog',
+                51: 'Light Drizzle',
+                53: 'Moderate Drizzle',
+                55: 'Dense Drizzle',
+                61: 'Slight Rain',
+                63: 'Moderate Rain',
+                65: 'Heavy Rain',
+                71: 'Slight Snow',
+                73: 'Moderate Snow',
+                75: 'Heavy Snow',
+                77: 'Snow Grains',
+                80: 'Slight Showers',
+                81: 'Moderate Showers',
+                82: 'Violent Showers',
+                85: 'Slight Snow Showers',
+                86: 'Heavy Snow Showers',
+                95: 'Thunderstorm',
+                96: 'Thunderstorm with Hail',
+                99: 'Heavy Thunderstorm'
+            };
+            
+            return weatherCodes[code] || 'Unknown';
         }
 
         // Generate dynamic safety suggestions
