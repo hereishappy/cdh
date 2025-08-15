@@ -40,12 +40,21 @@
       100% { transform: translateX(-50%); }
     }
 
-    /* Dashboard */
-    iframe {
-      border: none;
+    /* Dashboard container (footer hidden) */
+    .iframe-container {
       width: 100%;
       max-width: 1200px;
-      height: calc(90vh - 70px); /* space for tickers */
+      height: calc(90vh - 70px);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .iframe-container iframe {
+      width: 100%;
+      height: 105%;
+      border: none;
+      position: absolute;
+      top: -30px; /* hides Looker Studio footer */
     }
   </style>
 </head>
@@ -58,12 +67,14 @@
     </div>
   </header>
 
-  <!-- Dashboard Embed -->
-  <iframe 
-    src="https://lookerstudio.google.com/embed/reporting/269739d7-52c4-4c55-9f98-65fa02547f85/page/p_v8ez92uavd"
-    allowfullscreen
-    sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox">
-  </iframe>
+  <!-- Dashboard Embed (footer hidden) -->
+  <div class="iframe-container">
+    <iframe 
+      src="https://lookerstudio.google.com/embed/reporting/269739d7-52c4-4c55-9f98-65fa02547f85/page/p_v8ez92uavd"
+      allowfullscreen
+      sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox">
+    </iframe>
+  </div>
 
   <!-- Bottom Ticker -->
   <footer>
@@ -130,16 +141,16 @@
       }
     }
 
-    // Bottom Ticker - AI Safety Tips (static for now, can hook to API)
+    // Bottom Ticker - AI Safety Tips (static list for now)
     function updateBottomTicker() {
       let safetyTips = [
         "⛑️ Always wear your safety helmet on site.",
         "🚧 Keep walkways clear of debris to prevent trips.",
-        "⚡ Check all electrical tools before use.",
+        "⚡ Inspect electrical tools before each use.",
         "🦺 Wear high-visibility vests at all times.",
-        "📏 Maintain safe distances from operating machinery.",
+        "📏 Maintain safe distances from machinery.",
         "🛠️ Use the right tool for the job.",
-        "🚨 Report unsafe conditions immediately to a supervisor."
+        "🚨 Report unsafe conditions immediately."
       ];
 
       let ticker = document.getElementById("ticker-bottom");
@@ -158,13 +169,13 @@
     fetchTopTickerData();
     updateBottomTicker();
 
-    // Time updates every second
+    // Update time every second
     setInterval(updateTime, 1000);
 
-    // Weather refresh every 30 mins
+    // Refresh weather every 30 mins
     setInterval(fetchTopTickerData, 1800000);
 
-    // Safety tips refresh every hour (could be AI API in future)
+    // Refresh safety tips every hour
     setInterval(updateBottomTicker, 3600000);
   </script>
 
