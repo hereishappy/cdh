@@ -3,146 +3,246 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Construction Safety Dashboard</title>
+    <title>Site Performance Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @keyframes scroll-left {
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .news-ticker {
+            animation: scroll 30s linear infinite;
+        }
+        
+        @keyframes scroll {
             0% { transform: translateX(100%); }
             100% { transform: translateX(-100%); }
         }
         
-        .scrolling-text {
-            animation: scroll-left 30s linear infinite;
-            white-space: nowrap;
+        .weather-icon {
+            animation: pulse 2s ease-in-out infinite;
         }
         
-        .scrolling-container {
-            overflow: hidden;
-            position: relative;
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
         }
         
         /* Hide Looker Studio privacy text */
         iframe {
-            margin-bottom: -50px;
+            margin-bottom: -50px !important;
+        }
+        
+        .footer-overlay {
+            position: relative;
+            z-index: 10;
+            margin-top: -50px;
         }
     </style>
 </head>
-<body class="bg-gray-900 text-white min-h-screen flex flex-col">
-    <!-- Header with Live Information -->
-    <header class="bg-blue-900 border-b-2 border-blue-500 py-3">
-        <div class="scrolling-container">
-            <div class="scrolling-text text-lg font-semibold text-blue-100">
-                <span id="live-info" class="inline-flex items-center space-x-8">
-                    <span class="flex items-center">
-                        <span class="w-2 h-2 bg-red-500 rounded-full animate-pulse mr-2"></span>
-                        LIVE: <span id="current-time" class="ml-1 font-mono"></span>
-                    </span>
-                    <span class="flex items-center">
-                        📍 <span id="location" class="ml-1">New York, NY</span>
-                    </span>
-                    <span class="flex items-center">
-                        🌤️ <span id="weather" class="ml-1">72°F - Partly Cloudy</span>
-                    </span>
-                    <span class="flex items-center">
-                        💼 Construction Dashboard Active
-                    </span>
-                    <span class="flex items-center">
-                        ⚡ Real-time Data Updates
-                    </span>
-                </span>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-blue-900 to-blue-800 text-white shadow-lg">
+        <!-- Top Bar -->
+        <div class="bg-red-600 text-white py-1 overflow-hidden">
+            <div class="news-ticker whitespace-nowrap text-sm font-medium">
+                🔴 LIVE: Real-time site performance monitoring • Dashboard updates every 15 minutes • Critical alerts enabled
             </div>
         </div>
+        
+        <!-- Main Header -->
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
+                <!-- Left: Title -->
+                <div class="flex-1">
+                    <h1 class="text-2xl lg:text-3xl font-bold text-white">
+                        📊 The Site Performance Dashboard
+                    </h1>
+                    <p class="text-blue-200 text-sm mt-1">Real-time analytics and monitoring</p>
+                </div>
+                
+                <!-- Right: Weather, Time, Location -->
+                <div class="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-6 text-sm">
+                    <!-- Location -->
+                    <div class="flex items-center space-x-2">
+                        <span class="text-blue-300">📍</span>
+                        <span id="location" class="font-medium">Loading location...</span>
+                    </div>
+                    
+                    <!-- Weather -->
+                    <div class="flex items-center space-x-2">
+                        <span id="weather-icon" class="weather-icon">🌤️</span>
+                        <span id="weather" class="font-medium">Loading weather...</span>
+                    </div>
+                    
+                    <!-- Time -->
+                    <div class="flex items-center space-x-2">
+                        <span class="text-blue-300">🕐</span>
+                        <span id="current-time" class="font-medium font-mono"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Bottom Border -->
+        <div class="h-1 bg-gradient-to-r from-yellow-400 via-red-500 to-pink-500"></div>
     </header>
 
-    <!-- Main Dashboard Content -->
+    <!-- Main Content -->
     <main class="flex-1 bg-white">
-        <div class="w-full h-full flex justify-center">
+        <div class="w-full">
             <iframe 
                 width="100%" 
                 height="1068" 
                 src="https://lookerstudio.google.com/embed/reporting/269739d7-52c4-4c55-9f98-65fa02547f85/page/p_434sgrqavd" 
                 frameborder="0" 
-                style="border:0; min-width: 600px;" 
+                style="border:0; display:block;" 
                 allowfullscreen 
                 sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox">
             </iframe>
         </div>
     </main>
 
-    <!-- Footer with Safety Warnings -->
-    <footer class="bg-orange-600 border-t-2 border-orange-400 py-3">
-        <div class="scrolling-container">
-            <div class="scrolling-text text-lg font-semibold text-orange-100" style="animation-duration: 35s;">
-                <span class="inline-flex items-center space-x-8">
-                    <span class="flex items-center">
-                        ⚠️ SAFETY ALERT: Always wear proper PPE on construction sites
-                    </span>
-                    <span class="flex items-center">
-                        🦺 AI RECOMMENDATION: Check weather conditions before outdoor work
-                    </span>
-                    <span class="flex items-center">
-                        🔧 MAINTENANCE: Inspect equipment daily for optimal safety
-                    </span>
-                    <span class="flex items-center">
-                        📋 COMPLIANCE: Ensure all safety protocols are followed
-                    </span>
-                    <span class="flex items-center">
-                        🚨 EMERGENCY: Keep emergency contacts readily available
-                    </span>
-                    <span class="flex items-center">
-                        💡 TIP: Regular safety training reduces workplace incidents by 40%
-                    </span>
-                </span>
+    <!-- Footer Overlay -->
+    <footer class="footer-overlay bg-gradient-to-r from-gray-900 to-gray-800 text-white py-6">
+        <div class="container mx-auto px-4">
+            <!-- AI Safety Suggestions -->
+            <div class="bg-gradient-to-r from-green-600 to-blue-600 rounded-lg p-4 mb-4">
+                <h3 class="text-lg font-semibold mb-3 flex items-center">
+                    🤖 AI-Generated Scaffolding Safety Suggestions
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
+                    <div class="bg-white/10 rounded p-3">
+                        <div class="font-medium text-yellow-300 mb-1">⚠️ Performance Alert</div>
+                        <div>Monitor page load times during peak hours (9-11 AM, 2-4 PM)</div>
+                    </div>
+                    <div class="bg-white/10 rounded p-3">
+                        <div class="font-medium text-green-300 mb-1">✅ Optimization Tip</div>
+                        <div>Enable browser caching for static assets to improve load speeds</div>
+                    </div>
+                    <div class="bg-white/10 rounded p-3">
+                        <div class="font-medium text-blue-300 mb-1">🔍 Monitoring</div>
+                        <div>Set up automated alerts for 404 errors and server downtime</div>
+                    </div>
+                    <div class="bg-white/10 rounded p-3">
+                        <div class="font-medium text-purple-300 mb-1">📱 Mobile UX</div>
+                        <div>Ensure responsive design works across all device breakpoints</div>
+                    </div>
+                    <div class="bg-white/10 rounded p-3">
+                        <div class="font-medium text-orange-300 mb-1">🛡️ Security</div>
+                        <div>Regularly update SSL certificates and security headers</div>
+                    </div>
+                    <div class="bg-white/10 rounded p-3">
+                        <div class="font-medium text-red-300 mb-1">📊 Analytics</div>
+                        <div>Review bounce rates and user engagement metrics weekly</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Footer Info -->
+            <div class="border-t border-gray-700 pt-4 text-center text-sm text-gray-400">
+                <p>© 2024 Site Performance Dashboard • Powered by Looker Studio • Last updated: <span id="last-updated"></span></p>
             </div>
         </div>
     </footer>
 
     <script>
-        // Update live time
+        // Update time every second
         function updateTime() {
             const now = new Date();
             const timeString = now.toLocaleTimeString('en-US', {
-                hour12: false,
+                hour12: true,
                 hour: '2-digit',
                 minute: '2-digit',
                 second: '2-digit'
             });
             document.getElementById('current-time').textContent = timeString;
+            
+            // Update last updated timestamp
+            const dateString = now.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            document.getElementById('last-updated').textContent = dateString;
         }
-
-        // Simulate location updates
-        const locations = [
-            'New York, NY',
-            'Los Angeles, CA', 
-            'Chicago, IL',
-            'Houston, TX',
-            'Phoenix, AZ'
-        ];
-
-        function updateLocation() {
-            const randomLocation = locations[Math.floor(Math.random() * locations.length)];
-            document.getElementById('location').textContent = randomLocation;
+        
+        // Get user location and weather
+        async function getLocationAndWeather() {
+            try {
+                // Get user's location
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(async (position) => {
+                        const lat = position.coords.latitude;
+                        const lon = position.coords.longitude;
+                        
+                        try {
+                            // Get location name using reverse geocoding
+                            const locationResponse = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`);
+                            const locationData = await locationResponse.json();
+                            const city = locationData.city || locationData.locality || 'Unknown Location';
+                            const country = locationData.countryName || '';
+                            document.getElementById('location').textContent = `${city}, ${country}`;
+                            
+                            // Get weather data (using a free weather API)
+                            const weatherResponse = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&temperature_unit=fahrenheit`);
+                            const weatherData = await weatherResponse.json();
+                            const temp = Math.round(weatherData.current_weather.temperature);
+                            const weatherCode = weatherData.current_weather.weathercode;
+                            
+                            // Simple weather icon mapping
+                            const weatherIcons = {
+                                0: '☀️', 1: '🌤️', 2: '⛅', 3: '☁️',
+                                45: '🌫️', 48: '🌫️', 51: '🌦️', 53: '🌦️',
+                                55: '🌦️', 61: '🌧️', 63: '🌧️', 65: '🌧️',
+                                71: '🌨️', 73: '🌨️', 75: '🌨️', 95: '⛈️'
+                            };
+                            
+                            const icon = weatherIcons[weatherCode] || '🌤️';
+                            document.getElementById('weather-icon').textContent = icon;
+                            document.getElementById('weather').textContent = `${temp}°F`;
+                            
+                        } catch (error) {
+                            console.log('Weather API error:', error);
+                            document.getElementById('location').textContent = 'Location unavailable';
+                            document.getElementById('weather').textContent = 'Weather unavailable';
+                        }
+                    }, (error) => {
+                        document.getElementById('location').textContent = 'Location access denied';
+                        document.getElementById('weather').textContent = 'Weather unavailable';
+                    });
+                } else {
+                    document.getElementById('location').textContent = 'Geolocation not supported';
+                    document.getElementById('weather').textContent = 'Weather unavailable';
+                }
+            } catch (error) {
+                console.log('Location error:', error);
+                document.getElementById('location').textContent = 'Location unavailable';
+                document.getElementById('weather').textContent = 'Weather unavailable';
+            }
         }
-
-        // Simulate weather updates
-        const weatherConditions = [
-            '72°F - Partly Cloudy',
-            '68°F - Sunny',
-            '75°F - Clear Skies',
-            '70°F - Light Breeze',
-            '73°F - Mostly Sunny'
-        ];
-
-        function updateWeather() {
-            const randomWeather = weatherConditions[Math.floor(Math.random() * weatherConditions.length)];
-            document.getElementById('weather').textContent = randomWeather;
-        }
-
-        // Initialize and set intervals
+        
+        // Initialize
         updateTime();
         setInterval(updateTime, 1000);
-        setInterval(updateLocation, 15000); // Update location every 15 seconds
-        setInterval(updateWeather, 20000); // Update weather every 20 seconds
+        getLocationAndWeather();
+        
+        // Responsive iframe height adjustment
+        function adjustIframeHeight() {
+            const iframe = document.querySelector('iframe');
+            if (window.innerWidth < 768) {
+                iframe.style.height = '800px';
+            } else {
+                iframe.style.height = '1068px';
+            }
+        }
+        
+        window.addEventListener('resize', adjustIframeHeight);
+        adjustIframeHeight();
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96f610e267d58087',t:'MTc1NTIzMzM3Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96f67f16703a8a2a',t:'MTc1NTIzNzg4Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
